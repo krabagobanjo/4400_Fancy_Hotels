@@ -16,7 +16,7 @@ CREATE TABLE Review (
     rev_num  int           NOT NULL AUTO_INCREMENT,
     rating   varchar(10)           NOT NULL CHECK(rating in ('Excellent', 'Good', 'Bad', 'Very Bad', 'Neutral')),
     location varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami')),
-    comment  varchar(500)  NOT NULL,
+    comment  varchar(500)  ,
     Rusername   varchar(25)   NOT NULL,
     PRIMARY KEY(rev_num),
     FOREIGN KEY(Rusername) REFERENCES Customer(username)

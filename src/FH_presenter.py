@@ -2,7 +2,7 @@ from FH_model import *
 from tkinter import *
 from FH_views import *
 
-class SampleApp(Tk):
+class FH_presenter(Tk):
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
 

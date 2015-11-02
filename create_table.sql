@@ -2,7 +2,7 @@ CREATE TABLE Management (
     username  varchar(5)  NOT NULL,
     password  varchar(25)  NOT NULL,
     PRIMARY KEY(username)
-);
+)Engine=InnoDB;
 
 CREATE TABLE Customer (
     username  varchar(5)  NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE Customer (
     email     varchar(25)  NOT NULL,
     PRIMARY KEY(username),
     UNIQUE(email)
-);
+)Engine=InnoDB;
 
 CREATE TABLE Review (
     rev_num  int           NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE Review (
     Rusername   varchar(25)   NOT NULL,
     PRIMARY KEY(rev_num),
     FOREIGN KEY(Rusername) REFERENCES Customer(username)
-);
+)Engine=InnoDB;
 
 CREATE TABLE Payment_Info (
     cardnum  int          NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE Payment_Info (
     Pusername   varchar(25)  NOT NULL,
     PRIMARY KEY(cardnum),
     FOREIGN KEY(Pusername) REFERENCES Customer(username)
-);
+)Engine=InnoDB;
 
 CREATE TABLE Reservation (
     reservationID  int   NOT NULL AUTO_INCREMENT,
@@ -42,7 +42,7 @@ CREATE TABLE Reservation (
     PRIMARY KEY(reservationID),
     FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum) ON DELETE SET NULL,
     FOREIGN KEY(Rusername) REFERENCES Customer(username)
-);
+)Engine=InnoDB;
 
 CREATE TABLE Room (
     roomnum   int  NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE Room (
     numpeople int  NOT NULL,
     cpday     DEC(6,2)  NOT NULL,
     PRIMARY KEY(roomnum, location)
-);
+)Engine=InnoDB;
 
 CREATE TABLE Extra_Bed (
     Rroomnum   int  NOT NULL,
@@ -60,7 +60,7 @@ CREATE TABLE Extra_Bed (
     PRIMARY KEY(Rroomnum, Rlocation),
     FOREIGN KEY(Rroomnum) REFERENCES Room(roomnum)
     FOREIGN KEY(Rlocation) REFERENCES location
-);
+)Engine=InnoDB;
 
 CREATE TABLE Select_Extra_Bed (
     SreservationID  int  NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE Select_Extra_Bed (
     PRIMARY KEY(SreservationID, Sroomnum, Slocation),
     FOREIGN KEY(Sroomnum) REFERENCES Room(roomnum),
     FOREIGN KEY(Slocation) REFERENCES Room(location)
-);
+)Engine=InnoDB;
 
 CREATE TABLE Reservation_Has_Room (
     HreservationID  int  NOT NULL,
@@ -79,4 +79,4 @@ CREATE TABLE Reservation_Has_Room (
     FOREIGN KEY(HreservationID) REFERENCES Reservation(reservationID),
     FOREIGN KEY(Hroomnum) REFERENCES Room(roomnum),
     FOREIGN KEY(Hlocation) REFERENCES Room(location)
-);
+)Engine=InnoDB;

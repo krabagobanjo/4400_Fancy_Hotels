@@ -55,28 +55,25 @@ CREATE TABLE Room (
 
 CREATE TABLE Extra_Bed (
     Rroomnum   int  NOT NULL,
-    Rlocation  varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami')),
+    Rlocation  varchar(10)   NOT NULL,
     bedcost    DEC(4,2)  NOT NULL,
     PRIMARY KEY(Rroomnum, Rlocation),
-    FOREIGN KEY(Rroomnum) REFERENCES Room(roomnum),
-    FOREIGN KEY(Rlocation) REFERENCES Room(location)
+    FOREIGN KEY(Rroomnum, Rlocation) REFERENCES Room(roomnum, location)
 )Engine=InnoDB;
 
 CREATE TABLE Select_Extra_Bed (
     SreservationID  int  NOT NULL,
     Sroomnum        int  NOT NULL,
-    Slocation       varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami')),
+    Slocation       varchar(10)   NOT NULL,
     PRIMARY KEY(SreservationID, Sroomnum, Slocation),
-    FOREIGN KEY(Sroomnum) REFERENCES Room(roomnum),
-    FOREIGN KEY(Slocation) REFERENCES Room(location)
+    FOREIGN KEY(Sroomnum, Slocation) REFERENCES Room(roomnum, location)
 )Engine=InnoDB;
 
 CREATE TABLE Reservation_Has_Room (
     HreservationID  int  NOT NULL,
     Hroomnum        int  NOT NULL,
-    Hlocation       varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami')),
+    Hlocation       varchar(10)   NOT NULL,
     PRIMARY KEY(HreservationID, Hroomnum, Hlocation),
     FOREIGN KEY(HreservationID) REFERENCES Reservation(reservationID),
-    FOREIGN KEY(Hroomnum) REFERENCES Room(roomnum),
-    FOREIGN KEY(Hlocation) REFERENCES Room(location)
+    FOREIGN KEY(Hroomnum, Hlocation) REFERENCES Room(roomnum, location)
 )Engine=InnoDB;

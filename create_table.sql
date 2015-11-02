@@ -23,10 +23,10 @@ CREATE TABLE Review (
 )Engine=InnoDB;
 
 CREATE TABLE Payment_Info (
-    cardnum  int          NOT NULL,
+    cardnum  BIGINT          NOT NULL,
     name     varchar(20)  NOT NULL,
     expdate  DATE         NOT NULL,
-    CVV      int          NOT NULL CHECK(CVV>99 AND CVV<1000),
+    CVV      DEC(3,0)       NOT NULL,
     Pusername   varchar(25)  NOT NULL,
     PRIMARY KEY(cardnum),
     FOREIGN KEY(Pusername) REFERENCES Customer(username)
@@ -37,7 +37,7 @@ CREATE TABLE Reservation (
     start_date     DATE  NOT NULL,
     end_date       DATE  NOT NULL CHECK(end_date > start_date),
     tot_cost       DEC(6,2)   NOT NULL,
-    Rcardnum       int   NOT NULL,
+    Rcardnum       BIGINT   NOT NULL,
     Rusername      varchar(25)  NOT NULL,
     PRIMARY KEY(reservationID),
     FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum) ON DELETE CASCADE,

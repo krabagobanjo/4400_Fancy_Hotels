@@ -40,7 +40,7 @@ CREATE TABLE Reservation (
     Rcardnum       int   NOT NULL,
     Rusername      varchar(25)  NOT NULL,
     PRIMARY KEY(reservationID),
-    FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum),
+    FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum) ON DELETE CASCADE,
     FOREIGN KEY(Rusername) REFERENCES Customer(username)
 )Engine=InnoDB;
 
@@ -74,6 +74,6 @@ CREATE TABLE Reservation_Has_Room (
     Hroomnum        int  NOT NULL,
     Hlocation       varchar(10)   NOT NULL,
     PRIMARY KEY(HreservationID, Hroomnum, Hlocation),
-    FOREIGN KEY(HreservationID) REFERENCES Reservation(reservationID),
+    FOREIGN KEY(HreservationID) REFERENCES Reservation(reservationID) ON DELETE CASCADE,
     FOREIGN KEY(Hroomnum, Hlocation) REFERENCES Room(roomnum, location)
 )Engine=InnoDB;

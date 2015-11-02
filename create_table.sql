@@ -40,7 +40,7 @@ CREATE TABLE Reservation (
     Rcardnum       int   NOT NULL,
     Rusername      varchar(25)  NOT NULL,
     PRIMARY KEY(reservationID),
-    FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum) ON DELETE SET NULL,
+    FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum),
     FOREIGN KEY(Rusername) REFERENCES Customer(username)
 )Engine=InnoDB;
 

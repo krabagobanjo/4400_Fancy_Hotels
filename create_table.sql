@@ -1,69 +1,71 @@
 CREATE TABLE Management (
-    username  varchar(25)  NOT NULL,
+    username  varchar(5)  NOT NULL,
     password  varchar(25)  NOT NULL,
     PRIMARY KEY(username)
 );
 
 CREATE TABLE Customer (
-    username  varchar(25)  NOT NULL UNIQUE,
+    username  varchar(5)  NOT NULL,
     password  varchar(25)  NOT NULL,
     email     varchar(25)  NOT NULL,
     PRIMARY KEY(username),
+    UNIQUE(email)
 );
 
 CREATE TABLE Review (
     rev_num  int           NOT NULL,
-    rating   int           NOT NULL,
-    location varchar       NOT NULL,
+    rating   varchar(10)           NOT NULL CHECK(rating in 'Excellent', 'Good', 'Bad', 'Very Bad', 'Neutral'),
+    location varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami',)),
     comment  varchar(500)  NOT NULL,
     Rusername   varchar(25)   NOT NULL,
     PRIMARY KEY(rev_num),
-    FOREIGN KEY(Rusername) REFERENCES Customer(username) ON DELETE SET NULL ON UPDATE CASCADE
+    FOREIGN KEY(Rusername) REFERENCES Customer(username)
 );
 
 CREATE TABLE Payment_Info (
     cardnum  int          NOT NULL,
     name     varchar(20)  NOT NULL,
-    expdate  DATE         NOT NULL, --DATE CONSTRAINT
-    CVV      int          NOT NULL,
+    expdate  DATE         NOT NULL,
+    CVV      int          NOT NULL CHECK(CVV>99 AND CVV<1000),
     Pusername   varchar(25)  NOT NULL,
-    PRIMARY KEY(cardnum)
-    FOREIGN KEY(Pusername) REFERENCES Customer(username) ON DELETE SET NULL ON UPDATE CASCADE
+    PRIMARY KEY(cardnum),
+    FOREIGN KEY(Pusername) REFERENCES Customer(username)
 );
 
 CREATE TABLE Reservation (
-    reservationID  int   NOT NULL,
+    reservationID  int   NOT NULL AUTO_INCREMENT,
     start_date     DATE  NOT NULL,
     end_date       DATE  NOT NULL CHECK(end_date > start_date),
     tot_cost       DEC(6,2)   NOT NULL,
     Rcardnum       int   NOT NULL,
     Rusername      varchar(25)  NOT NULL,
     PRIMARY KEY(reservationID),
-    FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum),
+    FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum) ON DELETE SET NULL,
     FOREIGN KEY(Rusername) REFERENCES Customer(username)
 );
 
 CREATE TABLE Room (
-    roomnum  int  NOT NULL,
-    location int  NOT NULL,
-    category int  NOT NULL,
+    roomnum   int  NOT NULL,
+    location  varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami',)),
+    category  int  NOT NULL,
     numpeople int  NOT NULL,
-    cpday  DEC(6,2)  NOT NULL,
+    cpday     DEC(6,2)  NOT NULL,
     PRIMARY KEY(roomnum, location)
 );
 
 CREATE TABLE Extra_Bed (
-    Rroomnum  int  NOT NULL,
-    Rlocation  int  NOT NULL,
-    bedcost  DEC(4,2)  NOT NULL,
+    Rroomnum   int  NOT NULL,
+    Rlocation  varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami',)),
+    bedcost    DEC(4,2)  NOT NULL,
     PRIMARY KEY(Rroomnum, Rlocation),
     FOREIGN KEY(Rroomnum) REFERENCES Room(roomnum)
+    FOREIGN KEY(Rlocation) REFERENCES location
 );
 
 CREATE TABLE Select_Extra_Bed (
     SreservationID  int  NOT NULL,
     Sroomnum        int  NOT NULL,
-    Slocation       int  NOT NULL,
+    Slocation       varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami',)),
     PRIMARY KEY(SreservationID, Sroomnum, Slocation),
     FOREIGN KEY(Sroomnum) REFERENCES Room(roomnum),
     FOREIGN KEY(Slocation) REFERENCES Room(location)
@@ -72,7 +74,7 @@ CREATE TABLE Select_Extra_Bed (
 CREATE TABLE Reservation_Has_Room (
     HreservationID  int  NOT NULL,
     Hroomnum        int  NOT NULL,
-    Hlocation       varchar  NOT NULL,
+    Hlocation       varchar(10)   NOT NULL CHECK(location in ('Atlanta', 'Charlotte', 'Savannah', 'Orlando', 'Miami',)),
     PRIMARY KEY(HreservationID, Hroomnum, Hlocation),
     FOREIGN KEY(HreservationID) REFERENCES Reservation(reservationID),
     FOREIGN KEY(Hroomnum) REFERENCES Room(roomnum),

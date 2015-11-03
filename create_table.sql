@@ -37,10 +37,10 @@ CREATE TABLE Reservation (
     start_date     DATE  NOT NULL,
     end_date       DATE  NOT NULL CHECK(end_date > start_date),
     tot_cost       DEC(6,2)   NOT NULL,
-    Rcardnum       BIGINT   NOT NULL,
+    Rcardnum       BIGINT,
     Rusername      varchar(25)  NOT NULL,
     PRIMARY KEY(reservationID),
-    FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum) ON DELETE CASCADE,
+    FOREIGN KEY(Rcardnum) REFERENCES Payment_Info(cardnum) ON DELETE SET NULL,
     FOREIGN KEY(Rusername) REFERENCES Customer(username)
 )Engine=InnoDB;
 

@@ -1,11 +1,6 @@
+import mysql.connector
 
+cnx = mysql.connector.connect(user="cs4400_Group_76", password="YlVIp1tI",
+        host="academic-mysql.cc.gatech.edu", database="cs4400_Group_76")
 
-def calculate(*args):
-    try:
-        value = float(feet.get())
-        meters.set((0.3048 * value * 10000.0 + 0.5)/10000.0)
-    except ValueError:
-        pass
-#blah
-
-#YlVIp1tI
+cnx.close()

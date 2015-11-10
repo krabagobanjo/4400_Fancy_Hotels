@@ -27,7 +27,6 @@ class PageOne(Frame):
                            command=lambda: presenter.show_frame(StartPage))
         button.pack()
 
-
 class PageTwo(Frame):
 
     def __init__(self, parent, presenter):

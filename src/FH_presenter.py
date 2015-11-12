@@ -30,6 +30,11 @@ class FH_presenter(Tk):
 
     def login(self, username, password):
         #TODO - Regex to check username and password validity
-        #Get user info from database
-        #Check if password matches given
+        users = dbmodel.get_data("login", username) #should only have one user
+        if len(users) == 0:
+            pass #message box: you done fucked up
+        elif len(users) > 1:
+            pass #this should never happen
+        else:
+            pass #check password match
         pass

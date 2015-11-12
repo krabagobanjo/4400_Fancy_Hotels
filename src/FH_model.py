@@ -4,7 +4,9 @@ class FH_dbmodel(object):
     def __init__(self):
         self.cnx = mysql.connector.connect(user="cs4400_Group_76", password="YlVIp1tI",
                 host="academic-mysql.cc.gatech.edu", database="cs4400_Group_76")
-        self.cursor = self.cnx.cursor()
+        #Assuming we have a view defined as:
+        #CREATE VIEW users AS SELECT username, password FROM Customer UNION SELECT * FROM Management;
+        self.queries = {"login" : "SELECT * FROM users WHERE ", "newcust" : "INSERT INTO Customer VALUE"}
 
     def close_connection(self):
         self.cnx.close()
@@ -17,10 +19,23 @@ class FH_dbmodel(object):
         error code (if any)
     """
     def insert_data(self, query, to_insert):
-        pass
+        cursor = self.cnx.cursor()
+        to_query = self.queries.get(query)
+        to_query += "("
+        for i in range(len(to_insert)-1)
+            to_query += '"' + to_insert[i] + '",'
+        to_query += '"' + to_insert[len(to_insert)-1] + '")'
+        cursor.execute(to_query)
+        cursor.close()
 
     def get_data(self, query, to_get):
-        pass
+        cursor = self.cnx.cursor()
+        to_query = self.queries.get(query)
+        to_query += "("
+        for i in range(len(to_insert)-1)
+            to_query += '"' + to_insert[i] + '",'
+        to_query += '"' + to_insert[len(to_insert)-1] + '")'
+        cursor.execute(to_query)
 
     def del_data(self, query, to_get):
         pass

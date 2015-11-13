@@ -39,6 +39,7 @@ class LoginPage(Frame):
         register_button.grid(row = 8, column = 1)
 
 class RegisterPage(Frame):
+
     def __init__(self, parent, presenter):
         Frame.__init__(self, parent)
         Title = Label(self, text= "New User Registration", font=TITLE_FONT)
@@ -67,13 +68,7 @@ class RegisterPage(Frame):
         button.grid(row = 9, column = 1)
 
 class MainPageCustomer(Frame):
-        label = Label(self, text="This is page 1", font=TITLE_FONT)
-        label.pack(side="top", fill="x", pady=10)
-        button = Button(self, text="Go to the start page",
-                           command=lambda: presenter.show_frame(StartPage))
-        button.pack()
 
-class PageTwo(Frame):
     def __init__(self, parent, presenter):
         Frame.__init__(self, parent)
 
@@ -97,7 +92,11 @@ class PageTwo(Frame):
                            command=lambda: presenter.show_frame(LoginPage))
         button.grid(row = 9, column = 0)
 
+
+
+
 class MainPageManager(Frame):
+
 	def __init__(self, parent, presenter):
 		Frame.__init__(self, parent)
 		Label(self, text = "Choose Functionality", font = TITLE_FONT).grid(row = 1, column = 0, columnspan = 2)

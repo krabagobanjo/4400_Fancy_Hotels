@@ -1,9 +1,10 @@
-import mysql.connector
+import pymysql
 
+#execute, then commit
 class FH_dbmodel(object):
     def __init__(self):
-        self.cnx = mysql.connector.connect(user="cs4400_Group_76", password="YlVIp1tI",
-                host="academic-mysql.cc.gatech.edu", database="cs4400_Group_76")
+        self.cnx = pymysql.connect(host="academic-mysql.cc.gatech.edu", user="cs4400_Group_76",
+            passwd="YlVIp1tI", db="cs4400_Group_76")
         #Assuming we have a view defined as:
         #CREATE VIEW users AS SELECT username, password FROM Customer UNION SELECT * FROM Management;
         self.queries = {"login" : "SELECT * FROM users WHERE ", "newcust" : "INSERT INTO Customer VALUE"}

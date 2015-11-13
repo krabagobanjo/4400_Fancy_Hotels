@@ -15,7 +15,7 @@ class FH_presenter(Tk):
         container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (StartPage, PageOne, PageTwo):
+        for F in (LoginPage, MainPageCustomer, RegisterPage, MainPageManager, SearchRooms):
             frame = F(container, self)
             self.frames[F] = frame
             # put all of the pages in the same location;
@@ -23,7 +23,7 @@ class FH_presenter(Tk):
             # will be the one that is visible.
             frame.grid(row=0, column=0, sticky="nsew")
 
-        self.show_frame(StartPage)
+        self.show_frame(LoginPage)
 
     def show_frame(self, c):
         '''Show a frame for the given class'''

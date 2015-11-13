@@ -22,7 +22,7 @@ class FH_dbmodel(object):
         cursor = self.cnx.cursor()
         to_query = self.queries.get(query)
         to_query += "("
-        for i in range(len(to_insert)-1)
+        for i in range(len(to_insert)-1):
             to_query += '"' + to_insert[i] + '",'
         to_query += '"' + to_insert[len(to_insert)-1] + '")'
         cursor.execute(to_query)
@@ -32,7 +32,7 @@ class FH_dbmodel(object):
         cursor = self.cnx.cursor()
         to_query = self.queries.get(query)
         to_query += "("
-        for i in range(len(to_insert)-1)
+        for i in range(len(to_insert)-1):
             to_query += '"' + to_insert[i] + '",'
         to_query += '"' + to_insert[len(to_insert)-1] + '")'
         cursor.execute(to_query)

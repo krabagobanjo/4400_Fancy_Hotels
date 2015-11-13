@@ -15,11 +15,11 @@ class FH_presenter(Tk):
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
 
-        frame = LoginPage(self.container, self)
+        frame = StartPage(self.container, self)
         frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame = frame
         frame.tkraise()
-
+>>>>>>> master
 
     def show_frame(self, callee):
         '''Show a frame for the given class'''

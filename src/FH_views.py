@@ -56,15 +56,19 @@ class RegisterPage(Frame):
         Label(self, text = "Confirm Password", font = Main_Font).grid(row=6, column = 0, sticky = W)
         Label(self, text = "Email", font = Main_Font).grid(row = 7, column = 0, sticky = W)
 
-        Entry(self, width = 20).grid(row = 4, column = 1)
-        Entry(self, width = 20).grid(row = 5, column = 1)
-        Entry(self, width = 20).grid(row = 6, column = 1)
-        Entry(self, width = 20).grid(row = 7, column = 1)
-
+        username = StringVar()
+        password = StringVar()
+        confirmPassword = StringVar()
+        email = StringVar()
+        Entry(self, width = 20, textvariable = username).grid(row = 4, column = 1)
+        Entry(self, width = 20, textvariable = password).grid(row = 5, column = 1)
+        Entry(self, width = 20, textvariable = confirmPassword).grid(row = 6, column = 1)
+        Entry(self, width = 20, textvariable = email).grid(row = 7, column = 1)
+        
         Label(self, text = "").grid(row =8)
 
         button = Button(self, text="Submit",font = Main_Font, relief = RAISED,
-                           command=lambda: presenter.show_frame(MainPageManager))
+                           command=lambda: presenter.register(username.get(),password.get(),email.get()))
         button.grid(row = 9, column = 1)
 
 class MainPageCustomer(Frame):

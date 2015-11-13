@@ -27,6 +27,7 @@ class FH_dbmodel(object):
             to_query += '"' + to_insert[i] + '",'
         to_query += '"' + to_insert[len(to_insert)-1] + '")'
         cursor.execute(to_query)
+        self.cnx.commit()
         cursor.close()
 
     def get_data(self, query, to_get):

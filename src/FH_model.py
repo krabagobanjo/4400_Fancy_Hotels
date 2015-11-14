@@ -1,5 +1,10 @@
 import pymysql
 
+# mysql login info
+# username: cs4400_Group_76
+# password: YlVIp1tI
+# https://academic-mysql.cc.gatech.edu/phpmyadmin/
+
 #execute, then commit
 class FH_dbmodel(object):
     def __init__(self):

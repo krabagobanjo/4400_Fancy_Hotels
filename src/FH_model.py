@@ -6,6 +6,7 @@ import pymysql
 # https://academic-mysql.cc.gatech.edu/phpmyadmin/
 
 #execute, then commit
+
 class FH_dbmodel(object):
     def __init__(self):
         self.cnx = pymysql.connect(host="academic-mysql.cc.gatech.edu", user="cs4400_Group_76",

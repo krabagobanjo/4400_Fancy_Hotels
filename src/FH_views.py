@@ -1,5 +1,6 @@
 from FH_presenter import *
 from tkinter import *
+import pymysql
 
 TITLE_FONT = ("Times", 20, "italic")
 Main_Font = ("Times", 14)
@@ -18,6 +19,10 @@ class LoginPage(Frame):
 
 
         Label(self, text = "").grid(row = 2, column = 0)
+        
+        self.uservar = StringVar()
+        self.pwordvar = StringVar()
+		
 
         user = Label(self, text = "Username", font = Main_Font)
         user.grid(row = 3, column = 0)
@@ -25,10 +30,10 @@ class LoginPage(Frame):
         password = Label(self, text = "Password",font = Main_Font)
         password.grid(row = 4, column = 0)
 
-        e_user = Entry(self, width = 30)
+        e_user = Entry(self, width = 30, textvariable = self.uservar)
         e_user.grid(row = 3, column = 1)
 
-        e_password = Entry(self, width = 30)
+        e_password = Entry(self, width = 30, textvariable = self.pwordvar)
         e_password.grid(row = 4, column = 1)
 
         login_button = Button(self, text="Login", font = Main_Font, relief = RAISED, command=lambda: presenter.show_frame(MainPageCustomer))
@@ -37,7 +42,9 @@ class LoginPage(Frame):
         Label(self,text="").grid(row = 6, column = 0)
         Label(self,text="").grid(row = 7, column = 0)
         register_button.grid(row = 8, column = 1)
-
+        
+		
+		
 class RegisterPage(Frame):
 
     def __init__(self, parent, presenter):
@@ -125,13 +132,16 @@ class SearchRooms(Frame):
 		Label(self, text = "Start Date",font = Main_Font).grid(row = 4, column = 0)
 		Label(self, text = "End Date",font = Main_Font).grid(row = 4, column = 2)
 
-		Entry(self, width = 10).grid(row = 4, column = 1)
-		Entry(self, width = 10).grid(row = 4, column = 	3)
+		self.startdate = StringVar()
+		self.enddate = StringVar()
+		
+		Entry(self, width = 10, textvariable = self.startdate).grid(row = 4, column = 1)
+		Entry(self, width = 10, textvariable = self.enddate).grid(row = 4, column = 	3)
 
 		Label(self, text = "").grid(row = 5)
 		Button(self, text = "Search",font = Main_Font, relief = RAISED).grid(row = 6, column = 3)
 
-		self.loc_var = StringVar()
-		locations = OptionMenu(self,self.loc_var, "Atlanta", "Charlotte", "Savannah", "Orlando", "Miami")
+		self.location = StringVar()
+		locations = OptionMenu(self,self.location, "Atlanta", "Charlotte", "Savannah", "Orlando", "Miami")
 		locations.configure(width = 20, font = Main_Font)
 		locations.grid(row = 2, column = 1)

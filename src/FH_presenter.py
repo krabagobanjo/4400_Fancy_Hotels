@@ -39,11 +39,24 @@ class FH_presenter(Tk):
 
     def login(self, username, password):
         #TODO - Regex to check username and password validity
-        users = dbmodel.get_data("login", username) #should only have one user
-        if len(users) == 0:
+        if (username[0].lower() == "c"):
+            query_list = ['Username="'+username+'"']
+            user = dbmodel.get_data("cust_login", query_list)
+        elif(username[0].lower() == "m"):
+            user = dbmodel.get_data("mgmt_login", query_list)
+        else:
+            #throw error
+            pass
+        #we should only have one user
+        if len(user) == 0:
             pass #message box: you done fucked up
-        elif len(users) > 1:
+        elif len(user) > 1:
             pass #this should never happen
         else:
-            pass #check password match
+            if password == user[1]:
+                pass #authenticate
+            else:
+                pass #throw error
         pass
+
+    

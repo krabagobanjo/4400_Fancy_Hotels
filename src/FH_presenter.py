@@ -21,10 +21,6 @@ class FH_presenter(Tk):
         frame.tkraise()
 
     def register(self, username, password, email):
-        print(username)
-        print(password)
-        print(email)
-
         self.dbmodel.insert_data("newcust",[username,password,email] )
         self.show_frame(MainPageManager)
 

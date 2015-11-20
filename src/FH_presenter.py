@@ -51,8 +51,6 @@ class FH_presenter(Tk):
             self.dbmodel.insert_data("newcust",[username,password,email] )
             self.show_frame(MainPageManager)
 
-        
-
 
     def show_frame(self, callee):
         '''Show a frame for the given class'''

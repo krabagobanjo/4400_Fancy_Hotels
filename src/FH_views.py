@@ -150,6 +150,7 @@ class MakeReservations(Frame):
 	def __init__(self, parent, presenter):
 		Frame.__init__(self, parent)
 		
+	
 		Label(self, text = "Make Reservations", font = TITLE_FONT).grid(row = 0, column = 2, columnspan = 2)
 		
 		Label(self, text = "Room Number", font = Main_Font).grid(row = 1, column = 0)
@@ -195,15 +196,35 @@ class MakeReservations(Frame):
 		
 		
 		my_room_info = []
+		
 		for x in all_room_info:
 			for y in open_room_data:
 				if x[0:2] == y:
 					my_room_info.append(x)
 		
+					
+		cursor4 = self.cnx.cursor()
+		sql4 = """ SELECT * FROM Extra_Bed WHERE Rlocation = "{}" """.format(mylocation)
+		cursor4.execute(sql4)
+		extra_bed_info = list(cursor4.fetchall())
+		self.cnx.commit()
+		cursor4.close()
+				
+		
+		complete_room_info = []
+		
+		for x in my_room_info:
+			for y in extra_bed_info:
+				if x[0:2] == y[0:2]:
+					roomvalue = x[:]
+					bedvalue = (y[2],)
+					final = roomvalue + bedvalue
+					complete_room_info.append(final)
+	
 		colcount = -1
 		rowcount = 1
 		
-		for i in my_room_info:
+		for i in complete_room_info:
 			rowcount = rowcount + 1
 			colcount = -1
 			for value in i:
@@ -215,7 +236,7 @@ class MakeReservations(Frame):
 					
 		self.room_choice = IntVar()
 		
-		for i in range(len(my_room_info)):
+		for i in range(len(complete_room_info)):
 			
 			RB = Radiobutton(self, variable = self.room_choice, value = i + 1)
 			RB.grid(row = i + 2, column = 5)

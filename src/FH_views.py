@@ -48,6 +48,7 @@ class LoginPage(Frame):
 class RegisterPage(Frame):
 
     def __init__(self, parent, presenter):
+
         Frame.__init__(self, parent)
         Title = Label(self, text= "New User Registration", font=TITLE_FONT)
         Title.grid(row = 2, column = 0, columnspan = 2)
@@ -63,10 +64,12 @@ class RegisterPage(Frame):
         Label(self, text = "Confirm Password", font = Main_Font).grid(row=6, column = 0, sticky = W)
         Label(self, text = "Email", font = Main_Font).grid(row = 7, column = 0, sticky = W)
 
+        #initialze registration variables
         username = StringVar()
         password = StringVar()
         confirmPassword = StringVar()
         email = StringVar()
+
         Entry(self, width = 20, textvariable = username).grid(row = 4, column = 1)
         Entry(self, width = 20, textvariable = password).grid(row = 5, column = 1)
         Entry(self, width = 20, textvariable = confirmPassword).grid(row = 6, column = 1)
@@ -75,7 +78,7 @@ class RegisterPage(Frame):
         Label(self, text = "").grid(row =8)
 
         button = Button(self, text="Submit",font = Main_Font, relief = RAISED,
-                           command=lambda: presenter.register(username.get(),password.get(),email.get()))
+                           command=lambda: presenter.register(username.get(), confirmPassword.get(), password.get(), email.get(), RegisterPage))
         button.grid(row = 9, column = 1)
 
 class MainPageCustomer(Frame):

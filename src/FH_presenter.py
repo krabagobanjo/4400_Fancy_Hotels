@@ -1,8 +1,12 @@
 from FH_model import *
 from tkinter import *
+import tkinter.messagebox
 from FH_views import *
+import re
+
 
 class FH_presenter(Tk):
+
     def __init__(self, dbmodel):
         Tk.__init__(self)
 
@@ -20,13 +24,34 @@ class FH_presenter(Tk):
         self.curr_frame = frame
         frame.tkraise()
 
-    def register(self, username, password, email):
-        print(username)
-        print(password)
-        print(email)
+    def username_Validation(self, username):
+        if(len(username) != 5):
+            print("says wrong len");
+            return False
+        for index in range(len(username)):
+            if(index == 0):
+                if(username[index] != "c" and username[index] != "m"):
+                    print("says c or m prob")
+                    return False
+            if(index != 0):
+                print("says not int")
+                if(not username[index].isdigit()):
+                    return False
+        return True
 
-        self.dbmodel.insert_data("newcust",[username,password,email] )
-        self.show_frame(MainPageManager)
+    def register(self, username, confirmPassword, password, email, callee):
+      
+        if not self.username_Validation(username):
+            tkinter.messagebox.showwarning("","invalid username")
+        elif len(password) < 5 or len(password) > 15:
+            tkinter.messagebox.showwarning("","invalid password, must be between 5 and 15 characters")
+        elif password != confirmPassword:
+            tkinter.messagebox.showwarning("","password doesnt equal confirm password")
+        else:
+            self.dbmodel.insert_data("newcust",[username,password,email] )
+            self.show_frame(MainPageManager)
+
+        
 
 
     def show_frame(self, callee):
@@ -62,3 +87,6 @@ class FH_presenter(Tk):
             else:
                 pass #throw error
         pass
+
+    
+

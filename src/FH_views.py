@@ -234,15 +234,18 @@ class MakeReservations(Frame):
 					colcount = colcount + 1
 					Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
 					
-		self.room_choice = IntVar()
+		self.room_choice_vars = []
 		
 		for i in range(len(complete_room_info)):
-			
-			RB = Radiobutton(self, variable = self.room_choice, value = i + 1)
+			var = IntVar()
+			RB = Checkbutton(self, variable = var)
+			self.room_choice_vars.append(var)
 			RB.grid(row = i + 2, column = 5)
-			
-			
-				
+		
+		Button(self, text = "Check Details", font = Main_Font).grid(row = len(complete_room_info)+2, column = 5)
+		
+	#def state(self):
+	#	return( map((lambda var: var.get()),self.room_choice_vars)) 
 		
 		
 	

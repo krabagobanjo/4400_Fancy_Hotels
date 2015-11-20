@@ -1,4 +1,5 @@
 import pymysql
+import json
 
 # mysql login info
 # username: cs4400_Group_76
@@ -11,7 +12,11 @@ class FH_dbmodel(object):
     def __init__(self):
         self.cnx = pymysql.connect(host="academic-mysql.cc.gatech.edu", user="cs4400_Group_76",
             passwd="YlVIp1tI", db="cs4400_Group_76")
-        self.queries = {"cust_login" : "SELECT * FROM Customer WHERE ", "newcust" : "INSERT INTO Customer VALUE", "mgmt_login" : "SELECT * FROM Management WHERE "}
+        self.queries = {
+        "cust_login" : "SELECT * FROM Customer WHERE ",
+        "newcust" : "INSERT INTO Customer VALUE",
+        "mgmt_login" : "SELECT * FROM Management WHERE "
+        }
 
     def close_connection(self):
         self.cnx.close()
@@ -43,8 +48,9 @@ class FH_dbmodel(object):
                 to_query += '"' + to_insert[i] + '",'
             to_query += '"' + to_insert[len(to_insert)-1] + '")'
         cursor.execute(to_query)
-        self.cnx.commit()
+        results = cursor.fetchall()
         cursor.close()
+        return results
 
     def del_data(self, query, to_del):
         cursor = self.cnx.cursor()

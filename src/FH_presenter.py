@@ -39,11 +39,13 @@ class FH_presenter(Tk):
 
     def login(self, username, password):
         #TODO - Regex to check username and password validity
+        cust_mode = True
         if (username[0].lower() == "c"):
             query_list = ['Username="'+username+'"']
             user = dbmodel.get_data("cust_login", query_list)
         elif(username[0].lower() == "m"):
             user = dbmodel.get_data("mgmt_login", query_list)
+            cust_mode = False
         else:
             #throw error
             pass
@@ -54,9 +56,9 @@ class FH_presenter(Tk):
             pass #this should never happen
         else:
             if password == user[1]:
+                if cust_mode:
+                    self.show_frame(self,)
                 pass #authenticate
             else:
                 pass #throw error
         pass
-
-    

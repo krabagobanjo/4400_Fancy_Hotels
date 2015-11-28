@@ -13,9 +13,16 @@ class FH_dbmodel(object):
         self.cnx = pymysql.connect(host="academic-mysql.cc.gatech.edu", user="cs4400_Group_76",
             passwd="YlVIp1tI", db="cs4400_Group_76")
         self.queries = {
-        "cust_login" : "SELECT * FROM Customer WHERE ",
-        "newcust" : "INSERT INTO Customer VALUE",
-        "mgmt_login" : "SELECT * FROM Management WHERE "
+        "cust_login" : "SELECT * FROM Customer WHERE {}",
+        "newcust" : "INSERT INTO Customer VALUES {}",
+        "mgmt_login" : "SELECT * FROM Management WHERE {}"
+        "find_rooms" : "SELECT L.roomnum AS 'Room Number', L.category, L.numpeople, L.cpday, X.bedcost FROM Room L INNER JOIN Extra_Bed X ON L.roomnum = X.Roomnum AND L.location = X.Rlocation LEFT JOIN Reservation_Has_Room M ON L.roomnum = M.Hroomnum LEFT JOIN Reservation R ON M.HreservationID = R.reservationID WHERE {}"
+        "find_cardnums" : "SELECT * FROM 'Payment_Info' WHERE {}"
+        "add_reserv_1" : "INSERT INTO Reservation VALUES {}"
+        "add_reserv_2" : "INSERT INTO Reservation_Has_Room VALUES {}"
+        "add_cardnum" : "INSERT INTO Payment_Info VALUES {}"
+        "delete_cardnum" : "DELETE FROM Payment_Info WHERE {}"
+        "find_avail_rooms" : "SELECT * FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnm=H.Hroomnum WHERE {} in (SELECT M.roomnum FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum = H.Hroomnum WHERE {})"
         }
 
     def close_connection(self):

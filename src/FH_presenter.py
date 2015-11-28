@@ -3,6 +3,7 @@ from tkinter import *
 import tkinter.messagebox
 from FH_views import *
 import re
+import datetime
 
 
 class FH_presenter(Tk):
@@ -24,7 +25,8 @@ class FH_presenter(Tk):
         self.curr_frame = frame
         frame.tkraise()
 
-    def username_Validation(self, username):
+    def username_validation(self, username):
+        #((c|m|C|M)\d{4})
         if(len(username) != 5):
             print("says wrong len");
             return False
@@ -39,9 +41,9 @@ class FH_presenter(Tk):
                     return False
         return True
 
-    def register(self, username, confirmPassword, password, email, callee):
-      
-        if not self.username_Validation(username):
+    def register(self, username, confirmPassword, password, email, caller):
+
+        if not self.username_validation(username):
             tkinter.messagebox.showwarning("","invalid username")
         elif len(password) < 5 or len(password) > 15:
             tkinter.messagebox.showwarning("","invalid password, must be between 5 and 15 characters")
@@ -52,9 +54,9 @@ class FH_presenter(Tk):
             self.show_frame(MainPageManager)
 
 
-    def show_frame(self, callee):
+    def show_frame(self, caller):
         '''Show a frame for the given class'''
-        frame = callee(self.container, self)
+        frame = caller(self.container, self)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
         self.curr_frame.destroy()
@@ -80,11 +82,10 @@ class FH_presenter(Tk):
         else:
             if password == user[1]:
                 if cust_mode:
-                    self.show_frame(self,)
+                    self.show_frame(self, MainPageCustomer)
+                else:
+                    self.show_frame(self, MainPageManager)
                 pass #authenticate
             else:
                 pass #throw error
         pass
-
-    
-

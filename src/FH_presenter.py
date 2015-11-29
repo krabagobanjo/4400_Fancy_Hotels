@@ -32,7 +32,7 @@ class FH_presenter(Tk):
 
     def register(self, username, confirmPassword, password, email, caller):
         #We should remove the caller param, not needed
-        insert_string = "username={}, password={}, email={}"
+        # insert_string = "username={}, password={}, email={}"
         if not self.username_validation(username):
             tkinter.messagebox.showwarning("","invalid username")
         elif len(password) < 5 or len(password) > 15:
@@ -40,7 +40,7 @@ class FH_presenter(Tk):
         elif password != confirmPassword:
             tkinter.messagebox.showwarning("","password doesnt equal confirm password")
         else:
-            self.dbmodel.insert_data("newcust",[insert_string.format(username,password,email)] )
+            self.dbmodel.insert_data("newcust",[username,password,email] )
             self.show_frame(MainPageManager)
 
 
@@ -86,6 +86,8 @@ class FH_presenter(Tk):
         query = """(M.HreservationID IS NULL OR '{}' > R.end_date OR '{}' < R.start_date) AND L.location = "{}" """
         #check location, startdate, enddate format
         self.show_frame(MakeReservations)
-        query_list = [query.format(enddate, startdate, location)]
+        query_list = [enddate, startdate, location]
         plist = self.dbmodel.get_data("find_rooms", query_list)
         self.curr_frame.populate_list(plist)
+
+    # def add_card(self, )

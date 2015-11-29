@@ -85,9 +85,32 @@ class FH_presenter(Tk):
     def get_avail_rooms1(self, location, startdate, enddate):
         query = """(M.HreservationID IS NULL OR '{}' > R.end_date OR '{}' < R.start_date) AND L.location = "{}" """
         #check location, startdate, enddate format
-        self.show_frame(MakeReservations)
         query_list = [enddate, startdate, location]
         plist = self.dbmodel.get_data("find_rooms", query_list)
-        self.curr_frame.populate_list(plist)
+        frame = MakeReservations(self.container, self, plist, startdate, enddate, location)
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.tkraise()
+        self.curr_frame.destroy()
+        self.curr_frame = frame
 
     # def add_card(self, )
+
+    def get_avail_rooms2(self, startdate, enddate, location, prev_queries, intvars):
+        selected_rooms = []
+        entries = []
+        for i in range(len(intvars)):
+            if intvars[i].get() == 1:
+                selected_rooms.append(prev_queries[i][0])
+        if len(selected_rooms) < 1:
+            print("No rooms selected!")
+            return
+        for room in selected_rooms:
+            for vals in prev_queries:
+                if vals[0] == room:
+                    entries.append(vals)
+        frame = MakeReservationDrop(self.container, self, entries)
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.tkraise()
+        self.curr_frame.destroy()
+        self.curr_frame = frame
+        return

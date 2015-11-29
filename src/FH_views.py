@@ -98,7 +98,7 @@ class MainPageCustomer(Frame):
         Label(self, text = "Welcome!", font = ("Times",18)).grid(row = 3, column = 0)
         Button(self, text = "Make a New Reservation",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(SearchRooms)).grid(row = 4, column = 0)
         Button(self, text = "Update your reservation",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(UpdateReservationPage1)).grid(row = 5, column = 0)
-        Button(self, text = "Cancel Reservation",font = Main_Font, relief = FLAT).grid(row = 6, column = 0)
+        Button(self, text = "Cancel Reservation",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(CancelReservationPage1)).grid(row = 6, column = 0)
         Button(self, text = "Provide Feedback",font = Main_Font, relief = FLAT).grid(row = 7, column = 0)
         Button(self, text = "View Feedback",font = Main_Font, relief = FLAT).grid(row = 8, column = 0)
 
@@ -277,7 +277,7 @@ class MakeReservationDrop(Frame):
 		Label(self, text = "# of People Allowed", font = Main_Font).grid(row = 0, column = 2)
 		Label(self, text = "Cost Per Day", font = Main_Font).grid(row = 0, column = 3)
 		Label(self, text = "Cost of Extra Bed Per Day", font = Main_Font).grid(row = 0, column = 4)
-		Label(self, text = "Select Room", font = Main_Font).grid(row = 0, column = 5)
+		Label(self, text = "Extra Bed", font = Main_Font).grid(row = 0, column = 5)
 
 		
 		n =[]
@@ -407,7 +407,7 @@ class UpdateReservationPage3(Frame):
 		Label(self, text = "# of People Allowed", font = Main_Font).grid(row = 1, column = 2)
 		Label(self, text = "Cost Per Day", font = Main_Font).grid(row = 1, column = 3)
 		Label(self, text = "Cost of Extra Bed Per Day", font = Main_Font).grid(row = 1, column = 4)
-		Label(self, text = "Select Room", font = Main_Font).grid(row = 1, column = 5)
+		Label(self, text = "Select Extra Bed", font = Main_Font).grid(row = 1, column = 5)
 
 		
 		n = []
@@ -424,5 +424,51 @@ class UpdateReservationPage3(Frame):
 		self.cost_var = IntVar()
 		Entry(self, textvariable = self.cost_var, width = 10).grid(row = len(n) + 2, column = 2)
 		Button(self, text = "Submit", font = Main_Font).grid(row = len(n) + 3, column = 5)
+
+class CancelReservationPage1(Frame):
+	def __init__(self, parent, presenter):
+		Frame.__init__(self, parent)
+		Label(self, text = "Cancel Reservation", font = TITLE_FONT).grid(row = 0, column = 1)
+		Label(self, text = "Reservation ID", font = Main_Font).grid(row = 1, column = 0)
+		self.res_id_var = IntVar()
+		Entry(self, width = 10, textvariable = self.res_id_var).grid(row = 1, column = 1)
+		Button(self, text = "Search", command=lambda: presenter.show_frame(CancelReservationPage2)).grid(row = 1, column = 2)
+
+class CancelReservationPage2(Frame):
+	def __init__(self, parent, presenter):
+		Frame.__init__(self, parent)
+		Label(self, text = "Start Date", font = Main_Font).grid(row = 0, column = 0)
+		Label(self, text = "End Date", font = Main_Font).grid(row = 0, column = 3)
+		self.start_date_var = StringVar()
+		self.end_date_var = StringVar()
+		Entry(self, textvariable = self.start_date_var).grid(row = 0, column = 1, columnspan = 2)
+		Entry(self, textvariable = self.end_date_var, width = 10).grid(row = 0, column = 4, columnspan = 2)
+		Label(self, text = "Room Number", font = Main_Font).grid(row = 1, column = 0)
+		Label(self, text = "Room Category", font = Main_Font).grid(row = 1, column = 1)
+		Label(self, text = "# of People Allowed", font = Main_Font).grid(row = 1, column = 2)
+		Label(self, text = "Cost Per Day", font = Main_Font).grid(row = 1, column = 3)
+		Label(self, text = "Cost of Extra Bed Per Day", font = Main_Font).grid(row = 1, column = 4)
+		Label(self, text = "Select Extra Bed", font = Main_Font).grid(row = 1, column = 5)
+
+		n = []
+		# this will be populated with rooms ill use n for now
+		for i in n:
+			rowcount = rowcount + 1
+			colcount = -1
+			for value in i:
+				colcount = colcount + 1
+				Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
+		
+		Label(self, text = "Total Cost of Reservation", font = Main_Font).grid(row = len(n) + 2, column = 1, columnspan = 2)
+		Label(self, text = "Date of Cancellation", font = Main_Font).grid(row = len(n) + 3, column = 1, columnspan = 2)
+		Label(self, text = "Amount to be refunded", font = Main_Font).grid(row = len(n) + 4, column = 1 , columnspan = 2)
+		
+		self.total_cost_var = IntVar()
+		self.cancel_date_var = StringVar()
+		self.refund_var = IntVar()
+		
+		Entry(self, textvariable = self.total_cost_var).grid(row = len(n) + 2, column = 3, columnspan = 2)
+		Entry(self, textvariable = self.cancel_date_var).grid(row = len(n) + 3, column = 3, columnspan = 2)
+		Entry(self, textvariable = self.refund_var).grid(row = len(n) + 4, column = 3, columnspan = 2)
 		
 		

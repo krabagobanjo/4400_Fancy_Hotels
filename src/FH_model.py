@@ -22,12 +22,9 @@ class FH_dbmodel(object):
         "add_reserv_2" : "INSERT INTO Reservation_Has_Room VALUES({L[0]})",
         "add_cardnum" : "INSERT INTO Payment_Info VALUES({L[0]})",
         "delete_cardnum" : "DELETE FROM Payment_Info WHERE {L[0]}",
-<<<<<<< HEAD
-        "find_avail_rooms" : "SELECT * FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnm=H.Hroomnum WHERE {L[0]} in (SELECT M.roomnum FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum = H.Hroomnum WHERE {L[1]})"
-=======
+        "find_avail_rooms" : "SELECT * FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnm=H.Hroomnum WHERE {L[0]} in (SELECT M.roomnum FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum = H.Hroomnum WHERE {L[1]})",
         "find_avail_rooms" : "SELECT * FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnm=H.Hroomnum WHERE {L[0]} in (SELECT M.roomnum FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum = H.Hroomnum WHERE {L[1]})",
         
->>>>>>> origin/master
         }
 
     def close_connection(self):

@@ -185,7 +185,7 @@ class MakeReservations(Frame):
 
 
 class MakeReservationDrop(Frame):
-    def __init__(self, parent, presenter, pop_list):
+    def __init__(self, parent, presenter, pop_list, startdate, enddate):
         Frame.__init__(self, parent)
         Label(self, text = "Room Number", font = Main_Font).grid(row = 0, column = 0)
         Label(self, text = "Room Category", font = Main_Font).grid(row = 0, column = 1)
@@ -212,7 +212,9 @@ class MakeReservationDrop(Frame):
         Label(self, text = "Use Card", font = Main_Font).grid(row = len(n) + 4, column = 0)
 
         self.start_date_var = StringVar()
+        # self.start_date_var.set(startdate)
         self.end_date_var = StringVar()
+        # self.end_date_var.set(enddate)
         self.total_cost_var = StringVar()
 
         Entry(self, textvariable = self.start_date_var).grid(row = len(n)+ 2, column = 1, columnspan = 2)

@@ -24,6 +24,7 @@ class FH_presenter(Tk):
         frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame = frame
         frame.tkraise()
+        self.curr_user = None
 
     def username_validation(self, username):
         reg = r"((c|m|C|M)\d{4}$)"
@@ -58,7 +59,7 @@ class FH_presenter(Tk):
         cust_mode = True
         if self.username_validation(username):
             if (username[0].lower() == "c"):
-                query_list = [query.format(username)]
+                query_list = [username]
                 user = self.dbmodel.get_data("cust_login", query_list)
             elif(username[0].lower() == "m"):
                 user = self.dbmodel.get_data("mgmt_login", query_list)
@@ -77,6 +78,7 @@ class FH_presenter(Tk):
                         self.show_frame(self, MainPageCustomer)
                     else:
                         self.show_frame(self, MainPageManager)
+                    self.curr_user = username
                     pass #authenticate
                 else:
                     pass #throw error
@@ -108,9 +110,13 @@ class FH_presenter(Tk):
             for vals in prev_queries:
                 if vals[0] == room:
                     entries.append(vals)
-        frame = MakeReservationDrop(self.container, self, entries)
+        frame = MakeReservationDrop(self.container, self, entries, startdate, enddate)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
         self.curr_frame.destroy()
         self.curr_frame = frame
         return
+
+    def add_card(self, name, cardnum, expdate, cvv):
+        self.dbmodel.insert_data([cardnum, name, expdate, cvv, self.curr_user])
+        tkinter.messagebox.showwarning("","Card added!")

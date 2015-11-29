@@ -54,13 +54,14 @@ class FH_presenter(Tk):
 
     def login(self, username, password):
         #TODO - Regex to check username and password validity
+        query = "username={}"
         cust_mode = True
         if self.username_validation(username):
             if (username[0].lower() == "c"):
-                query_list = ['username="'+username+'"']
-                user = dbmodel.get_data("cust_login", query_list)
+                query_list = [query.format(username)]
+                user = self.dbmodel.get_data("cust_login", query_list)
             elif(username[0].lower() == "m"):
-                user = dbmodel.get_data("mgmt_login", query_list)
+                user = self.dbmodel.get_data("mgmt_login", query_list)
                 cust_mode = False
             else:
                 #throw error
@@ -80,3 +81,11 @@ class FH_presenter(Tk):
                 else:
                     pass #throw error
             pass
+
+    def get_avail_rooms1(self, location, startdate, enddate):
+        query = """(M.HreservationID IS NULL OR '{}' > R.end_date OR '{}' < R.start_date) AND L.location = "{}" """
+        #check location, startdate, enddate format
+        self.show_frame(MakeReservations)
+        query_list = [query.format(enddate, startdate, location)]
+        plist = self.dbmodel.get_data("find_rooms", query_list)
+        self.curr_frame.populate_list(plist)

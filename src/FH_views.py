@@ -78,7 +78,7 @@ class RegisterPage(Frame):
         Label(self, text = "").grid(row =8)
 
         button = Button(self, text="Submit",font = Main_Font, relief = RAISED,
-                           command=lambda: presenter.register(username.get(), confirmPassword.get(), password.get(), email.get(), RegisterPage))
+                           command=lambda: presenter.register(username.get(), confirmPassword.get(), password.get(), email.get()))
         button.grid(row = 9, column = 1)
 
 class MainPageCustomer(Frame):
@@ -228,7 +228,7 @@ class MakeReservationDrop(Frame):
         credit_card.configure(font = Main_Font)
         credit_card.grid(row = len(n)+ 4, column = 1, columnspan = 2)
 
-        Button(self, text = "Add Card", font = Main_Font, relief = FLAT, command = lambda: presenter.show_frame(PaymentPage)).grid(row = len(n) + 4, column = 3)
+        Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.show_frame(PaymentPage)).grid(row = len(n) + 4, column = 3)
         Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.credit_card.get())).grid(row =len(n) + 5, column = 4)
 
 
@@ -267,8 +267,8 @@ class PaymentPage(Frame):
         credit_card.configure(width = 20, font = Main_Font)
         credit_card.grid(row = 3, column = 3)
 
-        Button(self, text = "Save", font = Main_Font).grid(row = 8, column = 0)
-        Button(self, text = "Delete", font = Main_Font).grid(row = 8, column = 3)
+        Button(self, text = "Save", font = Main_Font, command= lambda: presenter.add_card(name_var.get(), card_num_var.get(), ex_date_var.get(), cvv_var.get())).grid(row = 8, column = 0)
+        Button(self, text = "Delete", font = Main_Font, command= lambda: presenter.del_card(self.credit_card.get())).grid(row = 8, column = 3)
 
 class ConfirmationPage(Frame):
     def __init__(self, parent, presenter, con_id):
@@ -298,7 +298,7 @@ class UpdateReservationPage1(Frame):
         Button(self, text = "Search", font= Main_Font, command=lambda: presenter.show_frame(UpdateReservationPage2)).grid(row = 2, column = 2)
 
 class UpdateReservationPage2(Frame):
-    def __init__(self, parent, presenter):
+    def __init__(self, parent, presenter, curr_start, curr_end, reservationID):
         Frame.__init__(self, parent)
         Label(self, text = "Current Start Date", font = Main_Font).grid(row = 0, column = 0)
         Label(self, text = "Current End Date", font = Main_Font).grid(row = 0, column = 2)
@@ -308,7 +308,9 @@ class UpdateReservationPage2(Frame):
         Label(self, text = "").grid(row = 3, column = 0)
 
         self.current_start_var = StringVar()
+        self.current_start_var.set(curr_start)
         self.current_end_var = StringVar()
+        self.current_end_var.set(curr_end)
         self.new_start_var = StringVar()
         self.new_end_var = StringVar()
 
@@ -320,9 +322,9 @@ class UpdateReservationPage2(Frame):
         Button(self, text = "Search Availability", font = Main_Font, command=lambda: presenter.show_frame(UpdateReservationPage3)).grid(row = 4, column = 1, columnspan = 2)
 
 class UpdateReservationPage3(Frame):
-    def __init__(self, parent, presenter):
+    def __init__(self, parent, presenter, pop_list, startdate, enddate, location):
         Frame.__init__(self, parent)
-        Label(self, text = "Room are available. Please confirm details below before submitting", font = Main_Font).grid(row = 0, column = 0, columnspan = 5)
+        Label(self, text = "Rooms are available. Please confirm details below before submitting", font = Main_Font).grid(row = 0, column = 0, columnspan = 5)
         Label(self, text = "Room Number", font = Main_Font).grid(row = 1, column = 0)
         Label(self, text = "Room Category", font = Main_Font).grid(row = 1, column = 1)
         Label(self, text = "# of People Allowed", font = Main_Font).grid(row = 1, column = 2)
@@ -331,7 +333,7 @@ class UpdateReservationPage3(Frame):
         Label(self, text = "Select Extra Bed", font = Main_Font).grid(row = 1, column = 5)
 
 
-        n = []
+        n = pop_list
         # this will be populated with available rooms ill use n for now
 
         for i in n:

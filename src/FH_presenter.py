@@ -31,8 +31,7 @@ class FH_presenter(Tk):
         match = re.match(reg, username)
         return True if match and match(0) == username else False
 
-    def register(self, username, confirmPassword, password, email, caller):
-        #We should remove the caller param, not needed
+    def register(self, username, confirmPassword, password, email):
         # insert_string = "username={}, password={}, email={}"
         if not self.username_validation(username):
             tkinter.messagebox.showwarning("","invalid username")
@@ -85,7 +84,7 @@ class FH_presenter(Tk):
             pass
 
     def get_avail_rooms1(self, location, startdate, enddate):
-        query = """(M.HreservationID IS NULL OR '{}' > R.end_date OR '{}' < R.start_date) AND L.location = "{}" """
+        # query = """(M.HreservationID IS NULL OR '{}' > R.end_date OR '{}' < R.start_date) AND L.location = "{}" """
         #check location, startdate, enddate format
         query_list = [enddate, startdate, location]
         plist = self.dbmodel.get_data("find_rooms", query_list)
@@ -95,7 +94,9 @@ class FH_presenter(Tk):
         self.curr_frame.destroy()
         self.curr_frame = frame
 
-    # def add_card(self, )
+    def get_update_rooms1(self, location, start_date, end_date):
+        query_list = [enddate, startdate, location]
+        plist = self.dbmodel.get_data("find_rooms", query_list)
 
     def get_avail_rooms2(self, startdate, enddate, location, prev_queries, intvars):
         selected_rooms = []
@@ -121,6 +122,10 @@ class FH_presenter(Tk):
         self.dbmodel.insert_data([cardnum, name, expdate, cvv, self.curr_user])
         tkinter.messagebox.showwarning("","Card added!")
 
+    def del_card(self, cardnum):
+        self.dbmodel.del_data("delete_cardnum", [cardnum])
+        tkinter.messagebox.showwarning("","Card removed!")
+
     def get_cards(self):
         card_list = self.dbmodel.get_data(find_cardnums, [self.curr_user])
         return [x[0] for x in card_list]
@@ -135,3 +140,6 @@ class FH_presenter(Tk):
         frame.tkraise()
         self.curr_frame.destroy()
         self.curr_frame = frame
+
+    def delete_reservation():
+        pass

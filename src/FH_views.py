@@ -60,8 +60,8 @@ class RegisterPage(Frame):
 
         Label(self, text = "").grid(row=3, column = 0)
         Label(self, text = "Username", font = Main_Font).grid(row = 4, column = 0, sticky = W)
-        Label(self, text = "Password", font = Main_Font).grid(row = 5, column = 0, sticky = W)
-        Label(self, text = "Confirm Password", font = Main_Font).grid(row=6, column = 0, sticky = W)
+        Label(self, text = "Password", font = Main_Font, show='*').grid(row = 5, column = 0, sticky = W)
+        Label(self, text = "Confirm Password", font = Main_Font, show='*').grid(row=6, column = 0, sticky = W)
         Label(self, text = "Email", font = Main_Font).grid(row = 7, column = 0, sticky = W)
 
         #initialze registration variables
@@ -260,8 +260,8 @@ class PaymentPage(Frame):
         Label(self, text = "Card Number", font = Main_Font).grid(row = 3, column = 2)
 
         options = [ "hi", "bye"]
+        # options = presenter.get_cards()
         self.credit_card = StringVar()
-        # test values this will be populated list of credit cards
         credit_card = OptionMenu (self, self.credit_card, *options)
         credit_card.configure(width = 20, font = Main_Font)
         credit_card.grid(row = 3, column = 3)

@@ -120,3 +120,7 @@ class FH_presenter(Tk):
     def add_card(self, name, cardnum, expdate, cvv):
         self.dbmodel.insert_data([cardnum, name, expdate, cvv, self.curr_user])
         tkinter.messagebox.showwarning("","Card added!")
+
+    def get_cards(self):
+        card_list = self.dbmodel.get_data(find_cardnums, [self.curr_user])
+        return [x[0] for x in card_list]

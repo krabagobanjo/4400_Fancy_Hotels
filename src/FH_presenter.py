@@ -61,7 +61,6 @@ class FH_presenter(Tk):
             query_list = [username]
             if (username[0] == "C"):
                 user = self.dbmodel.get_data("cust_login", query_list)
-                print(user)
             elif(username[0] == "M"):
                 user = self.dbmodel.get_data("mgmt_login", query_list)
                 cust_mode = False
@@ -160,8 +159,29 @@ class FH_presenter(Tk):
             self.curr_frame = frame
             self.curr_frame.tkraise()
 
-    def edit_reservation(self, resid, start_date, end_date):
-        
+    def get_update_reserv(self, resid, start_date, end_date):
+        rooms = self.dbmodel.get_data("get_update_reserv", [resid, start_date, end_date])
+        frame = UpdateReservationPage3(self.container, self, rooms, resid, start_date, end_date)
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.curr_frame.destroy()
+        self.curr_frame = frame
+        self.curr_frame.tkraise()
+
+    def update_reserv(self, resid, start_date, end_date, rooms):
+        tkinter.messagebox.showwarning("","Reservation updated")
+        self.show_frame(MainPageCustomer)
+
+    def get_cancel_reserv(self, resid):
+        res_entry = self.dbmodel.get_data("get_cancel_reserv", [resid])
+        if len(res_entry) < 1:
+            return #no entry found
+        else:
+            # you get list of reservationID start_date end_date tot_cost Rcardnum Rusername cancelled HreservationID Hroomnum Hlocation roomnum location category numpeople cpday
+            frame = CancelReservationPage2(self.container, self, res_entry)
+            frame.grid(row=0, column=0, sticky="nsew")
+            self.curr_frame.destroy()
+            self.curr_frame = frame
+            self.curr_frame.tkraise()
 
     def save_frame(self, to_save, next_frame):
         self.saved_frame = to_save
@@ -173,3 +193,24 @@ class FH_presenter(Tk):
         self.curr_frame.destroy()
         self.curr_frame = self.saved_frame
         self.curr_frame.tkraise()
+
+    def cancel_reservation(self, resid):
+        # self.dbmodel.del_data("cancel_reserv_1", [resid])
+        # self.dbmodel.del_data("cancel_reserv_2", [resid])
+        tkinter.messagebox.showwarning("","Reservation cancelled!")
+        self.show_frame(MainPageCustomer)
+
+    def get_reviews(self, location):
+        #need updated query for location
+        review_list = []
+        frame = ViewReviewPage2(self.container, self, review_list)
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.curr_frame.destroy()
+        self.curr_frame = frame
+        self.curr_frame.tkraise()
+
+    def add_review(self, rating, location, comment):
+        add_list = [rating, location, comment, self.curr_user]
+        self.dbmodel.insert_data("give_review", add_list)
+        tkinter.messagebox.showwarning("","Review added!")
+        self.show_frame(MainPageCustomer)

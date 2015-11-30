@@ -25,11 +25,12 @@ class FH_presenter(Tk):
         self.curr_frame = frame
         frame.tkraise()
         self.curr_user = None
+        self.saved_frame = None
 
     def username_validation(self, username):
         reg = r"((c|m|C|M)\d{4}$)"
-        match = re.match(reg, username)
-        return True if match and match(0) == username else False
+        mch = re.findall(reg, username)
+        return True if len(mch) > 0 and mch[0][0] == username else False
 
     def register(self, username, confirmPassword, password, email):
         # insert_string = "username={}, password={}, email={}"
@@ -53,35 +54,34 @@ class FH_presenter(Tk):
         self.curr_frame = frame
 
     def login(self, username, password):
-        #TODO - Regex to check username and password validity
+        username = username.capitalize()
         query = "username={}"
         cust_mode = True
         if self.username_validation(username):
-            if (username[0].lower() == "c"):
-                query_list = [username]
+            query_list = [username]
+            if (username[0] == "C"):
                 user = self.dbmodel.get_data("cust_login", query_list)
-            elif(username[0].lower() == "m"):
+                print(user)
+            elif(username[0] == "M"):
                 user = self.dbmodel.get_data("mgmt_login", query_list)
                 cust_mode = False
             else:
-                #throw error
-                pass
+                return None
             #we should only have one user
             if len(user) == 0:
-                pass #message box: you done fucked up
+                return None
             elif len(user) > 1:
-                pass #this should never happen
+                return None #this should never happen
             else:
-                if password == user[1]:
+                if password == user[0][1]:
                     if cust_mode:
-                        self.show_frame(self, MainPageCustomer)
+                        self.show_frame(MainPageCustomer)
                     else:
-                        self.show_frame(self, MainPageManager)
+                        self.show_frame(MainPageManager)
                     self.curr_user = username
-                    pass #authenticate
                 else:
-                    pass #throw error
-            pass
+                    print("Bad password")
+        return
 
     def get_avail_rooms1(self, location, startdate, enddate):
         # query = """(M.HreservationID IS NULL OR '{}' > R.end_date OR '{}' < R.start_date) AND L.location = "{}" """
@@ -111,7 +111,7 @@ class FH_presenter(Tk):
             for vals in prev_queries:
                 if vals[0] == room:
                     entries.append(vals)
-        frame = MakeReservationDrop(self.container, self, entries, startdate, enddate)
+        frame = MakeReservationDrop(self.container, self, entries, startdate, enddate, location)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
         self.curr_frame.destroy()
@@ -119,27 +119,57 @@ class FH_presenter(Tk):
         return
 
     def add_card(self, name, cardnum, expdate, cvv):
-        self.dbmodel.insert_data([cardnum, name, expdate, cvv, self.curr_user])
+        # self.dbmodel.insert_data([cardnum, name, expdate, cvv, self.curr_user])
         tkinter.messagebox.showwarning("","Card added!")
+        self.restore_frame()
 
     def del_card(self, cardnum):
-        self.dbmodel.del_data("delete_cardnum", [cardnum])
+        # self.dbmodel.del_data("delete_cardnum", [cardnum])
         tkinter.messagebox.showwarning("","Card removed!")
+        self.restore_frame()
 
     def get_cards(self):
-        card_list = self.dbmodel.get_data(find_cardnums, [self.curr_user])
+        card_list = self.dbmodel.get_data("find_cardnums", [self.curr_user])
         return [x[0] for x in card_list]
 
     def make_reservation(self, room_list, start_date, end_date, cardnum):
         #check valid start_date, end_date, cardnum
         #insert into reservation
-        last_id = self.dbmodel.get_data("get_last_reservID", None)
+        # last_id = self.dbmodel.get_data("get_last_reservID", None)
         #add_reserv_2
+        cost = self.curr_frame.calc_cost()
+        last_id = 42
         frame = ConfirmationPage(self.container, self, last_id)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
         self.curr_frame.destroy()
         self.curr_frame = frame
 
-    def delete_reservation():
-        pass
+    def get_reserv_by_id(self, resid):
+        res_entry = self.dbmodel.get_data("get_reserv_by_id", [resid])
+        if len(res_entry) < 1:
+            return #no entry found
+        elif len(res_entry) > 1:
+            return #something screwed up
+        else:
+            start_date = res_entry[0][0]
+            end_date = res_entry[0][1]
+            frame = UpdateReservationPage2(self.container, self, start_date, end_date, resid)
+            frame.grid(row=0, column=0, sticky="nsew")
+            self.curr_frame.destroy()
+            self.curr_frame = frame
+            self.curr_frame.tkraise()
+
+    def edit_reservation(self, resid, start_date, end_date):
+        
+
+    def save_frame(self, to_save, next_frame):
+        self.saved_frame = to_save
+        self.curr_frame = next_frame(self.container, self)
+        self.curr_frame.grid(row=0, column=0, sticky="nsew")
+        self.curr_frame.tkraise()
+
+    def restore_frame(self):
+        self.curr_frame.destroy()
+        self.curr_frame = self.saved_frame
+        self.curr_frame.tkraise()

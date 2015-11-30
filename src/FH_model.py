@@ -20,7 +20,7 @@ class FH_dbmodel(object):
         "find_cardnums" : "SELECT * FROM 'Payment_Info' WHERE Pusername='{L[0]}'",
         "add_reserv_1" : "INSERT INTO Reservation VALUES({L[0]})",
         "add_reserv_2" : "INSERT INTO Reservation_Has_Room VALUES({L[0]})",
-        "get_reservID" : "SELECT LAST_INSERT_ID() AS reservationID",
+        "get_last_reservID" : "SELECT LAST_INSERT_ID() AS reservationID",
         "add_cardnum" : "INSERT INTO Payment_Info VALUES({L[0]}, '{L[1]}', '{L[2]}', {L[3]}, '{L[4]}')",
         "delete_cardnum" : "DELETE FROM Payment_Info WHERE {L[0]}",
         "confirm_rooms" : """SELECT * FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum=H.Hroomnum WHERE R.reservationID<>{L[0]} AND M.roomnum in (SELECT M.roomnum FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum = H.Hroomnum WHERE R.reservationID={L[1]}) AND ('{L[2]}' > R.end_date OR '{L[3]}' < R.start_date) """,
@@ -44,7 +44,7 @@ class FH_dbmodel(object):
         """
         cursor = self.cnx.cursor()
         to_query = self.queries.get(query)
-        if to_insert:
+        if len(to_insert) > 0:
             to_query = to_query.format(L=to_insert)
             cursor.execute(to_query)
             self.cnx.commit()
@@ -64,13 +64,16 @@ class FH_dbmodel(object):
             cursor.close()
             return results
         else:
+            cursor.execute(to_query)
+            self.cnx.commit()
+            results = list(cursor.fetchall())
             cursor.close()
-            raise ValueError
+            return results
 
     def del_data(self, query, to_del):
         cursor = self.cnx.cursor()
         to_query = self.queries.get(query)
-        if to_del:
+        if len(to_del) > 0:
             to_query = to_query.format(L=to_del)
             cursor.execute(to_query)
             self.cnx.commit()
@@ -82,7 +85,7 @@ class FH_dbmodel(object):
     def update_data(self, query, to_update):
         cursor = self.cnx.cursor()
         to_query = self.queries.get(query)
-        if to_update:
+        if len(to_update) > 0:
             to_query = to_query.format(L=to_update)
             cursor.execute(to_query)
             self.cnx.commit()

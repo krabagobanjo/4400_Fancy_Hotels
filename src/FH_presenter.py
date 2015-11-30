@@ -124,3 +124,14 @@ class FH_presenter(Tk):
     def get_cards(self):
         card_list = self.dbmodel.get_data(find_cardnums, [self.curr_user])
         return [x[0] for x in card_list]
+
+    def make_reservation(self, room_list, start_date, end_date, cardnum):
+        #check valid start_date, end_date, cardnum
+        #insert into reservation
+        last_id = self.dbmodel.get_data("get_last_reservID", None)
+        #add_reserv_2
+        frame = ConfirmationPage(self.container, self, last_id)
+        frame.grid(row=0, column=0, sticky="nsew")
+        frame.tkraise()
+        self.curr_frame.destroy()
+        self.curr_frame = frame

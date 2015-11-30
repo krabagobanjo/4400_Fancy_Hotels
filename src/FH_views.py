@@ -185,7 +185,7 @@ class MakeReservations(Frame):
 
 
 class MakeReservationDrop(Frame):
-    def __init__(self, parent, presenter, pop_list, startdate, enddate):
+    def __init__(self, parent, presenter, pop_list, startdate, enddate, location):
         Frame.__init__(self, parent)
         Label(self, text = "Room Number", font = Main_Font).grid(row = 0, column = 0)
         Label(self, text = "Room Category", font = Main_Font).grid(row = 0, column = 1)
@@ -193,7 +193,6 @@ class MakeReservationDrop(Frame):
         Label(self, text = "Cost Per Day", font = Main_Font).grid(row = 0, column = 3)
         Label(self, text = "Cost of Extra Bed Per Day", font = Main_Font).grid(row = 0, column = 4)
         Label(self, text = "Extra Bed", font = Main_Font).grid(row = 0, column = 5)
-
 
         n = pop_list
         #The part part of this will contain the list of checked rooms for now I'll use n
@@ -223,13 +222,15 @@ class MakeReservationDrop(Frame):
 
         self.credit_card = StringVar()
         options = [ "hey", "bye" ]
+        # options = presenter.get_cards()
         #these are just test values this would be the populated list of credit cards
         credit_card = OptionMenu (self, self.credit_card, *options)
         credit_card.configure(font = Main_Font)
         credit_card.grid(row = len(n)+ 4, column = 1, columnspan = 2)
 
         Button(self, text = "Add Card", font = Main_Font, relief = FLAT, command = lambda: presenter.show_frame(PaymentPage)).grid(row = len(n) + 4, column = 3)
-        Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.show_frame(ConfirmationPage)).grid(row =len(n) + 5, column = 4)
+        Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.credit_card.get())).grid(row =len(n) + 5, column = 4)
+
 
 
 class PaymentPage(Frame):
@@ -270,7 +271,7 @@ class PaymentPage(Frame):
         Button(self, text = "Delete", font = Main_Font).grid(row = 8, column = 3)
 
 class ConfirmationPage(Frame):
-    def __init__(self, parent, presenter):
+    def __init__(self, parent, presenter, con_id):
         Frame.__init__(self, parent)
         Label(self, text = "Confirmation Screen", font = TITLE_FONT).grid(row = 0, column = 0, columnspan = 2)
         Label(self, text = "").grid(row = 1, column = 0)
@@ -280,6 +281,7 @@ class ConfirmationPage(Frame):
         Label(self, text = "Please save this reservation id for all further communication", font = ("Times", 10)).grid(row = 5, column = 0, columnspan = 2)
 
         self.confirm_var = IntVar()
+        self.confirm_var.set(con_id)
 
         Entry(self, textvariable = self.confirm_var, width = 10).grid(row = 2, column = 1)
 

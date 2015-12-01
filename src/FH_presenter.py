@@ -4,7 +4,7 @@ import tkinter.messagebox
 from FH_views import *
 import re
 from datetime import *
-
+from types import *
 
 class FH_presenter(Tk):
 
@@ -85,15 +85,80 @@ class FH_presenter(Tk):
                     print("Bad password")
         return
 
+    def check_reservation_dates(self, start, end):
+        present = datetime.now()
+        start_date = start
+        end_date = end
+
+        newstart = start_date.split("-")
+        newend = end_date.split("-")
+
+        if datetime(int(newstart[0]), int(newstart[1]), int(newstart[2])) < present:
+            return False
+        if datetime(int(newstart[0]), int(newstart[1]), int(newstart[2])) > datetime(int(newend[0]), int(newend[1]), int(newend[2])):
+            return False
+        return True
+
+    def calc_refund(self, start, end, total_cost):
+        present = datetime.now()
+        start_date = start
+        end_date = end
+
+        newstart = start_date.split("-")
+        newend = end_date.split("-")
+
+        newer_start = datetime(int(newstart[0]), int(newstart[1]), int(newstart[2]))
+
+        a = newer_start - present
+
+        if a <= timedelta(days=1):
+            return 0
+        elif a <= timedelta(days=3):
+            return total_cost*.8
+        else:
+            return total_cost
+
+    def calc_cost_create(self, start, end, room_list, intvars):
+        cost = 0
+        start_date = start
+        end_date = end
+        newstart = start_date.split("-")
+        newend = end_date.split("-")
+        newer_start = datetime(int(newstart[0]), int(newstart[1]), int(newstart[2]))
+        newer_end = datetime(int(newend[0]), int(newend[1]), int(newend[2]))
+        timediff = newer_end - newer_start
+        timediff = timediff.days
+        for room in room_list:
+            cost += (room[3] * timediff)
+        for i in range(len(intvars)):
+            if intvars[i].get() == 1:
+                cost+=(room_list[i][4] * timediff)
+        return cost
+
+    def calc_cost(self, start, end, room_list):
+        cost = 0
+        start_date = start
+        end_date = end
+        newstart = start_date.split("-")
+        newend = end_date.split("-")
+        newer_start = datetime(int(newstart[0]), int(newstart[1]), int(newstart[2]))
+        newer_end = datetime(int(newend[0]), int(newend[1]), int(newend[2]))
+        timediff = newer_end - newer_start
+        timediff = timediff.days
+        for room in room_list:
+            cost += (room[3] * timediff)
+
+
     def get_avail_rooms1(self, location, startdate, enddate):
         #check location, startdate, enddate format
-        query_list = [enddate, startdate, location]
-        plist = self.dbmodel.get_data("find_rooms", query_list)
-        frame = MakeReservations(self.container, self, plist, startdate, enddate, location)
-        frame.grid(row=0, column=0, sticky="nsew")
-        frame.tkraise()
-        self.curr_frame.destroy()
-        self.curr_frame = frame
+        if self.check_reservation_dates(startdate, enddate):
+            query_list = [enddate, startdate, location]
+            plist = self.dbmodel.get_data("find_rooms", query_list)
+            frame = MakeReservations(self.container, self, plist, startdate, enddate, location)
+            frame.grid(row=0, column=0, sticky="nsew")
+            frame.tkraise()
+            self.curr_frame.destroy()
+            self.curr_frame = frame
 
     def get_update_rooms1(self, location, start_date, end_date):
         query_list = [enddate, startdate, location]
@@ -138,21 +203,23 @@ class FH_presenter(Tk):
         #check valid start_date, end_date, cardnum
         #insert into reservation
         #start_date, end_date, tot_cost, Rcardnum, Rusername
-        cost = self.curr_frame.calc_cost()
-        self.dbmodel.insert_data("add_reserv_1", [start_date, end_date, cost, cardnum, self.curr_user])
-        resid = self.dbmodel.get_data("get_last_reservID")
-        #HreservationID, Hroomnum, Hlocation
-        for room in room_list:
-            self.dbmodel.insert_data("add_reserv_2" [resid, room[0], location])
-        #SreservationID, Srooomnum, Slocation 3
-        for i in range(len(intvars)):
-            if intvars[i].get() == 1:
-                self.dbmodel.insert_data("add_reserv_3", [resid, room_list[i][0], location])
-        frame = ConfirmationPage(self.container, self, resid)
-        frame.grid(row=0, column=0, sticky="nsew")
-        frame.tkraise()
-        self.curr_frame.destroy()
-        self.curr_frame = frame
+        if self.check_reservation_dates(start_date, end_date):
+            cost = self.calc_cost_create(start_date, end_date, room_list, intvars)
+            self.dbmodel.insert_data("add_reserv_1", [start_date, end_date, cost, cardnum, self.curr_user])
+            resid = self.dbmodel.get_data("get_last_reservID")
+            resid = resid[0][0]
+            #HreservationID, Hroomnum, Hlocation
+            for room in room_list:
+                self.dbmodel.insert_data("add_reserv_2", [resid, room[0], location])
+            #SreservationID, Srooomnum, Slocation 3
+            for i in range(len(intvars)):
+                if intvars[i].get() == 1:
+                    self.dbmodel.insert_data("add_reserv_3", [resid, room_list[i][0], location])
+            frame = ConfirmationPage(self.container, self, resid)
+            frame.grid(row=0, column=0, sticky="nsew")
+            frame.tkraise()
+            self.curr_frame.destroy()
+            self.curr_frame = frame
 
     def get_reserv_by_id(self, resid):
         res_entry = self.dbmodel.get_data("get_reserv_by_id", [resid])
@@ -170,16 +237,20 @@ class FH_presenter(Tk):
             self.curr_frame.tkraise()
 
     def get_update_reserv(self, resid, start_date, end_date):
-        rooms = self.dbmodel.get_data("get_update_reserv", [resid, start_date, end_date])
-        frame = UpdateReservationPage3(self.container, self, rooms, resid, start_date, end_date)
-        frame.grid(row=0, column=0, sticky="nsew")
-        self.curr_frame.destroy()
-        self.curr_frame = frame
-        self.curr_frame.tkraise()
+        if self.check_reservation_dates(start_date, end_date):
+            rooms = self.dbmodel.get_data("get_update_reserv", [resid, start_date, end_date])
+            # if len(rooms < 1):
+            frame = UpdateReservationPage3(self.container, self, rooms, resid, start_date, end_date)
+            frame.grid(row=0, column=0, sticky="nsew")
+            self.curr_frame.destroy()
+            self.curr_frame = frame
+            self.curr_frame.tkraise()
 
-    def update_reserv(self, resid, start_date, end_date, rooms):
-        tkinter.messagebox.showwarning("","Reservation updated")
-        self.show_frame(MainPageCustomer)
+    def update_reserv(self, resid, start_date, end_date):
+        if self.check_reservation_dates(start_date, end_date):
+            self.dbmodel.update_data("update_reserv", [start_date, end_date, resid])
+            tkinter.messagebox.showwarning("","Reservation updated")
+            self.show_frame(MainPageCustomer)
 
     def get_cancel_reserv(self, resid):
         res_entry = self.dbmodel.get_data("get_cancel_reserv", [resid])
@@ -189,8 +260,9 @@ class FH_presenter(Tk):
             # you get list of reservationID start_date end_date tot_cost Rcardnum Rusername cancelled HreservationID Hroomnum Hlocation roomnum location category numpeople cpday
             start_date = res_entry[0][1]
             end_date = res_entry[0][2]
-            room_list = [(x[10], x[12], x[13], x[14], "") for x in pop_list]
-            frame = CancelReservationPage2(self.container, self, res_entry)
+            room_list = [(x[10], x[12], x[13], x[14], "") for x in res_entry]
+            cost = self.calc_cost(start_date, end_date, room_list)
+            frame = CancelReservationPage2(self.container, self, room_list, start_date, end_date, cost)
             frame.grid(row=0, column=0, sticky="nsew")
             self.curr_frame.destroy()
             self.curr_frame = frame

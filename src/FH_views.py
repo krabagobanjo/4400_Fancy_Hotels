@@ -196,9 +196,9 @@ class MakeReservationDrop(Frame):
         Label(self, text = "Use Card", font = Main_Font).grid(row = len(n) + 4, column = 0)
 
         self.start_date_var = StringVar()
-        # self.start_date_var.set(startdate)
+        self.start_date_var.set(startdate)
         self.end_date_var = StringVar()
-        # self.end_date_var.set(enddate)
+        self.end_date_var.set(enddate)
         self.total_cost_var = StringVar()
 
 
@@ -215,9 +215,8 @@ class MakeReservationDrop(Frame):
         credit_card.grid(row = len(n)+ 4, column = 1, columnspan = 2)
 
         Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_resdrop_frame(PaymentPage, self.pop_list, self.start_date, self.end_date, self.location)).grid(row = len(n) + 4, column = 3)
-        Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.location, self.credit_card.get(), self.room_choice_vars)).grid(row =len(n) + 5, column = 4)
+        Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, self.start_date_var.get(), self.end_date_var.get(), self.location, self.credit_card.get(), self.room_choice_vars)).grid(row =len(n) + 5, column = 4)
         Button(self, text = "Update Cost", font = Main_Font, relief = RAISED, command=lambda: self.set_cost(self.room_choice_vars)).grid(row = len(n) + 5, column = 1)
-
 
         self.room_choice_vars = []
         self.room_choice = IntVar()
@@ -226,22 +225,10 @@ class MakeReservationDrop(Frame):
             RB = Checkbutton(self, variable = var)
             self.room_choice_vars.append(var)
             RB.grid(row = i + 2, column = 5)
-        self.total_cost_var.set(self.calc_cost(self.room_choice_vars))
-
-
-    def calc_cost(self, intvars):
-        cost = 0
-        for i in self.pop_list:
-            cost += i[3]
-        for i in range(len(intvars)):
-            if intvars[i].get() == 1:
-                cost+=self.pop_list[i][4]
-        print(cost)
-        return cost
+        self.total_cost_var.set(presenter.calc_cost_create(self.start_date, self.end_date, self.pop_list, self.room_choice_vars))
 
     def set_cost(self, intvars):
-        self.total_cost_var.set(self.calc_cost(intvars))
-
+        self.total_cost_var.set(self.presenter.calc_cost_create(self.start_date, self.end_date, self.pop_list, self.room_choice_vars))
 
 class PaymentPage(Frame):
     def __init__(self, parent, presenter):
@@ -361,7 +348,7 @@ class UpdateReservationPage3(Frame):
         self.cost_var = IntVar()
         self.cost_var = self.calc_cost()
         Entry(self, textvariable = self.cost_var, width = 10).grid(row = len(n) + 2, column = 2)
-        Button(self, text = "Submit", font = Main_Font, relief = RAISED, command=lambda: presenter.update_reserv(self.resid, self.start_date, self.end_date, pop_list)).grid(row = len(n) + 3, column = 5)
+        Button(self, text = "Submit", font = Main_Font, relief = RAISED, command=lambda: presenter.update_reserv(self.resid, self.start_date, self.end_date)).grid(row = len(n) + 3, column = 5)
 
         self.room_choice_vars = []
         self.room_choice = IntVar()
@@ -387,7 +374,7 @@ class CancelReservationPage1(Frame):
         Button(self, text = "Search", relief = RAISED, command=lambda: presenter.get_cancel_reserv(self.res_id_var.get())).grid(row = 1, column = 2)
 
 class CancelReservationPage2(Frame):
-    def __init__(self, parent, presenter, pop_list, start_date, end_date):
+    def __init__(self, parent, presenter, pop_list, start_date, end_date, total_cost):
         Frame.__init__(self, parent)
         Label(self, text = "Start Date", font = Main_Font).grid(row = 0, column = 0)
         Label(self, text = "End Date", font = Main_Font).grid(row = 0, column = 3)
@@ -432,7 +419,7 @@ class CancelReservationPage2(Frame):
         self.cancel_date_var = StringVar()
         #set to current date
         self.refund_var = IntVar()
-        self.refund_var.set(self.calc_refund())
+        self.refund_var.set(presenter.calc_refund(start_date, end_date, total_cost))
 
         Entry(self, textvariable = self.total_cost_var).grid(row = len(n) + 2, column = 3, columnspan = 2)
         Entry(self, textvariable = self.cancel_date_var).grid(row = len(n) + 3, column = 3, columnspan = 2)
@@ -441,8 +428,6 @@ class CancelReservationPage2(Frame):
         Button(self, text = "Cancel Reservation", font = Main_Font, relief = RAISED, command= presenter.show_frame(MainPageCustomer)).grid(row = len(n) + 5, column = 4)
         #need cancel button?
 
-    def calc_refund(self):
-        return 0
 
 class ViewReviewPage1(Frame):
     def __init__(self, parent, presenter):

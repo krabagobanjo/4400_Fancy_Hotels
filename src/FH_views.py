@@ -101,8 +101,8 @@ class MainPageManager(Frame):
         Frame.__init__(self, parent)
         Label(self, text = "Choose Functionality", font = TITLE_FONT).grid(row = 1, column = 0, columnspan = 2)
         Label(self, text = "Welcome!", font = ("Times", 18)).grid(row = 2, column = 0)
-        Button(self, text = "View Reservation Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(ReservationReport)).grid(row = 3, column = 0)
-        Button(self, text = "View Popular Room Category Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(PopularRoom)).grid(row = 4, column = 0)
+        Button(self, text = "View Reservation Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_reserv_report()).grid(row = 3, column = 0)
+        Button(self, text = "View Popular Room Category Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_pop_rooms()).grid(row = 4, column = 0)
         Button(self, text = "View Revenue Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_reserv_report()).grid(row = 5, column = 0)
 
 class SearchRooms(Frame):

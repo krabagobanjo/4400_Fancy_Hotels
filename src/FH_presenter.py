@@ -40,6 +40,8 @@ class FH_presenter(Tk):
             tkinter.messagebox.showwarning("","invalid password, must be between 5 and 15 characters")
         elif password != confirmPassword:
             tkinter.messagebox.showwarning("","password doesnt equal confirm password")
+        elif len(username) == 0 or len(confirmPassword) == 0 or len(password) == 0 or len(email) == 0:
+            tkinter.messagebox.showwarning("","empty fields are not allowed")
         else:
             self.dbmodel.insert_data("newcust",[username,password,email] )
             self.show_frame(MainPageManager)
@@ -221,7 +223,8 @@ class FH_presenter(Tk):
         self.show_frame(MainPageCustomer)
 
     def get_pop_rooms(self):
-        room_list = [] #need sql query
+        self.dbmodel.mult_queries("pop_report_view_update")
+        room_list = self.dbmodel.get_data("get_pop_report", None)
         frame = PopularRoom(self.container, self, room_list)
         frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame.destroy()
@@ -237,6 +240,7 @@ class FH_presenter(Tk):
         self.curr_frame.tkraise()
 
     def get_reserv_report(self):
+        self.dbmodel.mult_queries("reserv_report_view_update")
         reserv_list = self.dbmodel.get_data("get_reserv_report", None)
         frame = ReservationReport(self.container, self, reserv_list)
         frame.grid(row=0, column=0, sticky="nsew")

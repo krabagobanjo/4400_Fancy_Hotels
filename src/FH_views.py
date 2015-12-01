@@ -2,6 +2,7 @@ from FH_presenter import *
 from tkinter import *
 import pymysql
 
+
 TITLE_FONT = ("Times", 20, "italic")
 Main_Font = ("Times", 14)
 
@@ -489,12 +490,22 @@ class GiveReviewPage(Frame):
 class ReservationReport(Frame):
     def __init__(self, parent, presenter, pop_list):
         Frame.__init__(self, parent)
-        Label(self, text = "Reservation Report", font = TITLE_FONT).grid(row = 0, column = 1, columnspan = 2)
-        Label(self, text = "").grid(row = 1, column = 0)
-        Label(self, text = "Month", font = Main_Font).grid(row = 2, column = 0)
-        Label(self, text = "Location", font = Main_Font).grid(row = 2, column = 1)
-        Label(self, text = "Total Number of Reservations", font = Main_Font).grid(row = 2, column = 2)
-
+        
+        self.canvas = Canvas(self, borderwidth = 0)
+        self.frame = Frame(self.canvas)
+        self.vsb = Scrollbar(self, orient = VERTICAL, command = self.canvas.yview)
+        self.canvas.configure(yscrollcommand = self.vsb.set)
+        self.vsb.pack(side = RIGHT, fill = Y)
+        self.canvas.pack(side = LEFT, fill = BOTH, expand = True)
+        self.canvas.create_window((4,4), window = self.frame, anchor= NW, tags = "self.frame")
+        
+        self.frame.bind("<Configure>", self.onFrameConfigure)
+        
+        Label(self.frame, text = "Reservation Report", font = TITLE_FONT).grid(row = 0, column = 1, columnspan = 2)
+        Label(self.frame, text = "").grid(row = 1, column = 0)
+        Label(self.frame, text = "Month", font = Main_Font).grid(row = 2, column = 0)
+        Label(self.frame, text = "Location", font = Main_Font).grid(row = 2, column = 1)
+        Label(self.frame, text = "Total Number of Reservations", font = Main_Font).grid(row = 2, column = 2)
         n = pop_list
         #this will be populated with report info
         colcount = -1
@@ -504,10 +515,12 @@ class ReservationReport(Frame):
             colcount = -1
             for value in i:
                 colcount = colcount + 1
-                Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
+                Label(self.frame, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
 
-        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.show_frame(MainPageManager)).grid(row = len(n) + 3, column = 1)
-
+        Button(self.frame, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.show_frame(MainPageManager)).grid(row = len(n) + 3, column = 1)
+        
+    def onFrameConfigure(self, event):
+    	self.canvas.configure(scrollregion = self.canvas.bbox("all"))
 
 class PopularRoom(Frame):
     def __init__(self, parent, presenter, pop_list):
@@ -535,7 +548,6 @@ class PopularRoom(Frame):
 class RevenueReport(Frame):
     def __init__(self, parent, presenter, pop_list):
         Frame.__init__(self, parent)
-        Scrollbar(self).pack(side = RIGHT)
         Label(self, text = "Revenue Report", font = TITLE_FONT).grid(row = 0, column = 1, columnspan = 2)
         Label(self, text = "").grid(row = 1, column = 0)
         Label(self, text = "Month", font = Main_Font).grid(row = 2, column = 0)

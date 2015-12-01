@@ -3,7 +3,7 @@ from tkinter import *
 import tkinter.messagebox
 from FH_views import *
 import re
-import datetime
+from datetime import *
 
 
 class FH_presenter(Tk):
@@ -178,6 +178,9 @@ class FH_presenter(Tk):
             return #no entry found
         else:
             # you get list of reservationID start_date end_date tot_cost Rcardnum Rusername cancelled HreservationID Hroomnum Hlocation roomnum location category numpeople cpday
+            start_date = res_entry[0][1]
+            end_date = res_entry[0][2]
+            room_list = [(x[10], x[12], x[13], x[14], "") for x in pop_list]
             frame = CancelReservationPage2(self.container, self, res_entry)
             frame.grid(row=0, column=0, sticky="nsew")
             self.curr_frame.destroy()
@@ -234,8 +237,8 @@ class FH_presenter(Tk):
         self.curr_frame.tkraise()
 
     def get_reserv_report(self):
-        reserv_list = []
-        # reserv_list = self.dbmodel.get_data
+        # reserv_list = []
+        reserv_list = self.dbmodel.get_data("get_reserv_report", None)
         frame = ReservationReport(self.container, self, reserv_list)
         frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame.destroy()

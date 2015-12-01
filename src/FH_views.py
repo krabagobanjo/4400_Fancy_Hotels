@@ -103,7 +103,7 @@ class MainPageManager(Frame):
         Label(self, text = "Welcome!", font = ("Times", 18)).grid(row = 2, column = 0)
         Button(self, text = "View Reservation Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(ReservationReport)).grid(row = 3, column = 0)
         Button(self, text = "View Popular Room Category Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(PopularRoom)).grid(row = 4, column = 0)
-        Button(self, text = "View Revenue Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(RevenueReport)).grid(row = 5, column = 0)
+        Button(self, text = "View Revenue Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_rev_report()).grid(row = 5, column = 0)
 
 class SearchRooms(Frame):
     def __init__(self, parent, presenter):
@@ -176,6 +176,9 @@ class MakeReservationDrop(Frame):
         Label(self, text = "Extra Bed", font = Main_Font).grid(row = 0, column = 5)
         self.pop_list = pop_list
         self.presenter = presenter
+        self.start_date = startdate
+        self.end_date = enddate
+        self.location = location
         n = pop_list
         #The part part of this will contain the list of checked rooms for now I'll use n
         colcount = -1
@@ -234,6 +237,7 @@ class MakeReservationDrop(Frame):
 
     def get_cards(self):
         self.options = self.presenter.get_cards()
+        print("Get cards run")
 
 
 class PaymentPage(Frame):
@@ -377,10 +381,10 @@ class CancelReservationPage1(Frame):
         Label(self, text = "Reservation ID", font = Main_Font).grid(row = 1, column = 0)
         self.res_id_var = IntVar()
         Entry(self, width = 10, textvariable = self.res_id_var).grid(row = 1, column = 1)
-        Button(self, text = "Search", relief = RAISED, command=lambda: presenter.show_frame(CancelReservationPage2)).grid(row = 1, column = 2)
+        Button(self, text = "Search", relief = RAISED, command=lambda: presenter.get_cancel_reserv(self.res_id_var.get())).grid(row = 1, column = 2)
 
 class CancelReservationPage2(Frame):
-    def __init__(self, parent, presenter, pop_list):
+    def __init__(self, parent, presenter, pop_list, start_date, end_date):
         Frame.__init__(self, parent)
         Label(self, text = "Start Date", font = Main_Font).grid(row = 0, column = 0)
         Label(self, text = "End Date", font = Main_Font).grid(row = 0, column = 3)
@@ -395,10 +399,12 @@ class CancelReservationPage2(Frame):
         Label(self, text = "Cost of Extra Bed Per Day", font = Main_Font).grid(row = 1, column = 4)
         Label(self, text = "Select Extra Bed", font = Main_Font).grid(row = 1, column = 5)
 
-        view_list = [(x[10], x[12], x[13], x[14], "") for x in pop_list]
+        # view_list = [(x[10], x[12], x[13], x[14], "") for x in pop_list]
 
-        n = view_list
+        n = pop_list
         # this will be populated with rooms ill use n for now
+        colcount = -1
+        rowcount = 1
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -429,7 +435,7 @@ class CancelReservationPage2(Frame):
         Entry(self, textvariable = self.cancel_date_var).grid(row = len(n) + 3, column = 3, columnspan = 2)
         Entry(self, textvariable = self.refund_var).grid(row = len(n) + 4, column = 3, columnspan = 2)
 
-        Button(self, text = "Cancel", font = Main_Font, relief = RAISED, command= presenter.show_frame(MainPageCustomer)).grid(row = len(n) + 5, column = 4)
+        Button(self, text = "Cancel Reservation", font = Main_Font, relief = RAISED, command= presenter.show_frame(MainPageCustomer)).grid(row = len(n) + 5, column = 4)
         #need cancel button?
 
     def calc_refund(self):

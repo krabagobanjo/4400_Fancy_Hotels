@@ -87,7 +87,11 @@ class FH_dbmodel(object):
         SELECT * FROM update_reservation_three t1
         WHERE NOT EXISTS (SELECT 1 FROM update_reservation_four t2 WHERE t1.roomnum = t2.roomnum AND t1.location = t2.location);""",
 
+<<<<<<< HEAD
         "update_reserv_view_update_four":"""SELECT * FROM update_reservation_five WHERE reservationID='{L[0]}'""",
+=======
+        "update_reserv_view_update_four":"""SELECT * FROM update_reservation_five WHERE reservationID='{L[0]}'"""
+>>>>>>> origin/master
 
         }
 

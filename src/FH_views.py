@@ -212,6 +212,8 @@ class MakeReservationDrop(Frame):
 
         Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_frame(self, PaymentPage)).grid(row = len(n) + 4, column = 3)
         Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.credit_card.get())).grid(row =len(n) + 5, column = 4)
+        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED).grid(row = len(n) + 5, column = 1)
+        
         
         self.room_choice_vars = []
         self.room_choice = IntVar()
@@ -221,7 +223,7 @@ class MakeReservationDrop(Frame):
             self.room_choice_vars.append(var)
             RB.grid(row = i + 2, column = 5)
         
-	
+        	
 
     def calc_cost(self):
         cost = 0
@@ -350,7 +352,15 @@ class UpdateReservationPage3(Frame):
         self.cost_var = self.calc_cost()
         Entry(self, textvariable = self.cost_var, width = 10).grid(row = len(n) + 2, column = 2)
         Button(self, text = "Submit", font = Main_Font, relief = RAISED, command=lambda: presenter.update_reserv(self.resid, self.start_date, self.end_date, pop_list)).grid(row = len(n) + 3, column = 5)
-
+        
+        self.room_choice_vars = []
+        self.room_choice = IntVar()
+        for i in range(len(n)):
+            var = IntVar()
+            RB = Checkbutton(self, variable = var)
+            self.room_choice_vars.append(var)
+            RB.grid(row = i + 2, column = 5)
+        
     def calc_cost(self):
         cost = 0
         for i in self.pop_list:
@@ -393,6 +403,15 @@ class CancelReservationPage2(Frame):
                 colcount = colcount + 1
                 Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
 
+        self.room_choice_vars = []
+        self.room_choice = IntVar()
+        for i in range(len(n)):
+            var = IntVar()
+            RB = Checkbutton(self, variable = var)
+            self.room_choice_vars.append(var)
+            RB.grid(row = i + 2, column = 5)
+        
+        
         Label(self, text = "Total Cost of Reservation", font = Main_Font).grid(row = len(n) + 2, column = 1, columnspan = 2)
         Label(self, text = "Date of Cancellation", font = Main_Font).grid(row = len(n) + 3, column = 1, columnspan = 2)
         Label(self, text = "Amount to be refunded", font = Main_Font).grid(row = len(n) + 4, column = 1 , columnspan = 2)

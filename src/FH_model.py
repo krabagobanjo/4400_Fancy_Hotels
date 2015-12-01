@@ -32,8 +32,8 @@ class FH_dbmodel(object):
         "cancel_reserv_2" : """DELETE FROM Reservation_Has_Room WHERE HreservationID='{L[0]}' """,
         "get_reviews" : "SELECT rating, comment FROM Review WHERE location='{L[0]}' ORDER BY rating",
         "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]})",
-        "get_reserv_report" : """DROP VIEW myview; CREATE VIEW myview AS SELECT DISTINCT reservationID, DATE(start_date) as Month, hlocation FROM Reservation NATURAL JOIN Reservation_Has_Room WHERE cancelled = 0; SELECT *, count(*) from myview GROUP BY Month, hlocation;""",
-        "get_rev_report" : """DROP VIEW brisview; CREATE VIEW brisview as SELECT SUM(tot_cost), DATE(start_date) as Month, hlocation FROM Reservation NATURAL JOIN Reservation_Has_Room WHERE cancelled = 0; SELECT *, count(*) from brisview GROUP BY Month, hlocation;"""
+        "get_reserv_report" : """SELECT *, count(*) from myview GROUP BY Month, hlocation""",
+        "get_rev_report" : """SELECT *, count(*) from brisview GROUP BY Month, hlocation"""
 
         }
 

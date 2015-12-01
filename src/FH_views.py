@@ -101,9 +101,9 @@ class MainPageManager(Frame):
         Frame.__init__(self, parent)
         Label(self, text = "Choose Functionality", font = TITLE_FONT).grid(row = 1, column = 0, columnspan = 2)
         Label(self, text = "Welcome!", font = ("Times", 18)).grid(row = 2, column = 0)
-        Button(self, text = "View Reservation Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(ReservationReport)).grid(row = 3, column = 0)
-        Button(self, text = "View Popular Room Category Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(PopularRoom)).grid(row = 4, column = 0)
-        Button(self, text = "View Revenue Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_reserv_report()).grid(row = 5, column = 0)
+        Button(self, text = "View Reservation Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_reserv_report()).grid(row = 3, column = 0)
+        Button(self, text = "View Popular Room Category Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_pop_rooms()).grid(row = 4, column = 0)
+        Button(self, text = "View Revenue Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_rev_report()).grid(row = 5, column = 0)
 
 class SearchRooms(Frame):
     def __init__(self, parent, presenter):
@@ -216,7 +216,7 @@ class MakeReservationDrop(Frame):
 
         Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_resdrop_frame(PaymentPage, self.pop_list, self.start_date, self.end_date, self.location)).grid(row = len(n) + 4, column = 3)
         Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.location, self.credit_card.get(), self.room_choice_vars)).grid(row =len(n) + 5, column = 4)
-        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED, command=lambda: self.calc_cost(self.room_choice_vars)).grid(row = len(n) + 5, column = 1)
+        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED, command=lambda: self.set_cost(self.room_choice_vars)).grid(row = len(n) + 5, column = 1)
 
 
         self.room_choice_vars = []
@@ -513,7 +513,7 @@ class ReservationReport(Frame):
         n = pop_list
         #this will be populated with report info
         colcount = -1
-        rowcount = 1
+        rowcount = 2
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -537,7 +537,7 @@ class PopularRoom(Frame):
         n = pop_list
         #this will be populated with report info
         colcount = -1
-        rowcount = 1
+        rowcount = 2
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -545,7 +545,7 @@ class PopularRoom(Frame):
                 colcount = colcount + 1
                 Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
 
-        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.get_pop_rooms()).grid(row = len(n) + 3, column = 1)
+        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.show_frame(MainPageManager)).grid(row = len(n) + 3, column = 1)
 
 class RevenueReport(Frame):
     def __init__(self, parent, presenter, pop_list):
@@ -559,7 +559,7 @@ class RevenueReport(Frame):
         n = pop_list
         #this will be populated with report info
         colcount = -1
-        rowcount = 1
+        rowcount = 2
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -567,4 +567,4 @@ class RevenueReport(Frame):
                 colcount = colcount + 1
                 Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
 
-        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.get_rev_report()).grid(row = len(n) + 3, column = 1)
+        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.show_frame(MainPageManager)).grid(row = len(n) + 3, column = 1)

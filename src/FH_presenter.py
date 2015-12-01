@@ -129,7 +129,8 @@ class FH_presenter(Tk):
 
     def get_cards(self):
         card_list = self.dbmodel.get_data("find_cardnums", [self.curr_user])
-        return [x[0] for x in card_list]
+        ret = [x[0] for x in card_list]
+        return ret
 
     def make_reservation(self, room_list, start_date, end_date, location, cardnum, intvars):
         #check valid start_date, end_date, cardnum
@@ -206,6 +207,7 @@ class FH_presenter(Tk):
 
     def save_resdrop_frame(self, next_frame, pop_list, startdate, enddate, location):
         self.save_list = [pop_list, startdate, enddate, location]
+        self.curr_frame.destroy()
         self.curr_frame = next_frame(self.container, self)
         self.curr_frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame.tkraise()
@@ -217,6 +219,7 @@ class FH_presenter(Tk):
         location = self.save_list[3]
         self.curr_frame.destroy()
         self.curr_frame = MakeReservationDrop(self.container, self, pop_list, startdate, enddate, location)
+        self.curr_frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame.tkraise()
 
     def cancel_reservation(self, resid):

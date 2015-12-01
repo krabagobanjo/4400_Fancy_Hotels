@@ -54,7 +54,38 @@ class FH_dbmodel(object):
         SELECT MAX(s2.reservations) from popularview_four as s2
         WHERE s.Month = s2.Month AND s.location = s2.location );""",
         "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]})",
-        "get_rev_report" : """SELECT *, count(*) from brisview GROUP BY Month, hlocation"""
+        "get_rev_report" : """SELECT *, count(*) from brisview GROUP BY Month, hlocation""",
+
+        "update_reserv_view_update":"""DROP VIEW update_reservation_one;
+        CREATE VIEW update_reservation_one AS
+        SELECT * FROM Reservation R 
+        INNER JOIN 
+        Reservation_Has_Room H 
+        ON R.reservationID=H.HreservationID;
+        DROP VIEW update_reservation_two;
+        CREATE VIEW update_reservation_two AS
+        SELECT * FROM Room M
+        INNER JOIN
+        Extra_Bed P
+        ON M.roomnum = P.Rroomnum and M.location = P.Rlocation;
+        DROP VIEW update_reservation_three;
+        CREATE VIEW update_reservation_three AS
+        SELECT * FROM update_reservation_two t2
+        LEFT JOIN
+        update_reservation_one t1
+        ON t1.Hroomnum = t2.roomnum and t1.Hlocation = t2.location;
+        DROP VIEW update_reservation_four;""",
+
+        "update_reserv_view_update_two":"""CREATE VIEW update_reservation_four AS
+        SELECT roomnum, location FROM update_reservation_three t1
+        WHERE start_date > {L[0]} AND end_date < {L[1]} OR start_date < {L[0]} AND end_date > {L[1]} OR start_date > {L[0]} AND start_date < {L[1]} AND end_date > {L[1]} OR start_date < {L[0]} AND end_date > {L[0]} AND end_date < {L[1]};""",
+
+        "update_reserv_view_update_three":"""DROP VIEW update_reservation_five;
+        CREATE VIEW update_reservation_five AS
+        SELECT * FROM update_reservation_three t1
+        WHERE NOT EXISTS (SELECT 1 FROM update_reservation_four t2 WHERE t1.roomnum = t2.roomnum AND t1.location = t2.location);""",
+
+        "update_reserv_view_update_four":"""SELECT * FROM update_reservation_five WHERE reservationID='{L[0]}'"""
 
         }
 

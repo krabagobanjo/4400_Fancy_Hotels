@@ -200,7 +200,7 @@ class MakeReservationDrop(Frame):
         self.end_date_var = StringVar()
         # self.end_date_var.set(enddate)
         self.total_cost_var = StringVar()
-        self.total_cost_var.set(self.calc_cost())
+
 
         Entry(self, textvariable = self.start_date_var).grid(row = len(n)+ 2, column = 1, columnspan = 2)
         Entry(self, textvariable = self.end_date_var).grid(row = len(n) + 2, column = 4, columnspan = 2)
@@ -208,15 +208,15 @@ class MakeReservationDrop(Frame):
 
         self.credit_card = StringVar()
         # options = [ "hey", "bye" ]
-        self.options = presenter.get_cards()
+        options = presenter.get_cards()
         #these are just test values this would be the populated list of credit cards
-        credit_card = OptionMenu (self, self.credit_card, *self.options)
+        credit_card = OptionMenu (self, self.credit_card, *options)
         credit_card.configure(font = Main_Font)
         credit_card.grid(row = len(n)+ 4, column = 1, columnspan = 2)
 
-        Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_frame(self, PaymentPage)).grid(row = len(n) + 4, column = 3)
-        Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.credit_card.get())).grid(row =len(n) + 5, column = 4)
-        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED).grid(row = len(n) + 5, column = 1)
+        Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_resdrop_frame(PaymentPage, self.pop_list, self.start_date, self.end_date, self.location)).grid(row = len(n) + 4, column = 3)
+        Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.location, self.credit_card.get(), self.room_choice_vars)).grid(row =len(n) + 5, column = 4)
+        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED, command=lambda: self.set_cost(self.room_choice_vars)).grid(row = len(n) + 5, column = 1)
 
 
         self.room_choice_vars = []
@@ -226,18 +226,21 @@ class MakeReservationDrop(Frame):
             RB = Checkbutton(self, variable = var)
             self.room_choice_vars.append(var)
             RB.grid(row = i + 2, column = 5)
+        self.total_cost_var.set(self.calc_cost(self.room_choice_vars))
 
 
-
-    def calc_cost(self):
+    def calc_cost(self, intvars):
         cost = 0
         for i in self.pop_list:
             cost += i[3]
+        for i in range(len(intvars)):
+            if intvars[i].get() == 1:
+                cost+=self.pop_list[i][4]
+        print(cost)
         return cost
 
-    def get_cards(self):
-        self.options = self.presenter.get_cards()
-        print("Get cards run")
+    def set_cost(self, intvars):
+        self.total_cost_var.set(self.calc_cost(intvars))
 
 
 class PaymentPage(Frame):
@@ -510,7 +513,7 @@ class ReservationReport(Frame):
         n = pop_list
         #this will be populated with report info
         colcount = -1
-        rowcount = 1
+        rowcount = 2
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -534,7 +537,7 @@ class PopularRoom(Frame):
         n = pop_list
         #this will be populated with report info
         colcount = -1
-        rowcount = 1
+        rowcount = 2
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -547,6 +550,7 @@ class PopularRoom(Frame):
 class RevenueReport(Frame):
     def __init__(self, parent, presenter, pop_list):
         Frame.__init__(self, parent)
+        Scrollbar(self).pack(side = RIGHT)
         Label(self, text = "Revenue Report", font = TITLE_FONT).grid(row = 0, column = 1, columnspan = 2)
         Label(self, text = "").grid(row = 1, column = 0)
         Label(self, text = "Month", font = Main_Font).grid(row = 2, column = 0)
@@ -556,7 +560,7 @@ class RevenueReport(Frame):
         n = pop_list
         #this will be populated with report info
         colcount = -1
-        rowcount = 1
+        rowcount = 2
         for i in n:
             rowcount = rowcount + 1
             colcount = -1

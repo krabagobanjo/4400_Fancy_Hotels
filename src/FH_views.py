@@ -156,7 +156,7 @@ class MakeReservations(Frame):
                 else:
                     colcount = colcount + 1
                     Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
-        
+
         for i in range(len(pop_list)):
             var = IntVar()
             RB = Checkbutton(self, variable = var)
@@ -175,6 +175,7 @@ class MakeReservationDrop(Frame):
         Label(self, text = "Cost of Extra Bed Per Day", font = Main_Font).grid(row = 0, column = 4)
         Label(self, text = "Extra Bed", font = Main_Font).grid(row = 0, column = 5)
         self.pop_list = pop_list
+        self.presenter = presenter
         n = pop_list
         #The part part of this will contain the list of checked rooms for now I'll use n
         colcount = -1
@@ -204,17 +205,17 @@ class MakeReservationDrop(Frame):
 
         self.credit_card = StringVar()
         # options = [ "hey", "bye" ]
-        options = presenter.get_cards()
+        self.options = presenter.get_cards()
         #these are just test values this would be the populated list of credit cards
-        credit_card = OptionMenu (self, self.credit_card, *options)
+        credit_card = OptionMenu (self, self.credit_card, *self.options)
         credit_card.configure(font = Main_Font)
         credit_card.grid(row = len(n)+ 4, column = 1, columnspan = 2)
 
         Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_frame(self, PaymentPage)).grid(row = len(n) + 4, column = 3)
         Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.credit_card.get())).grid(row =len(n) + 5, column = 4)
         Button(self, text = "Update Cost", font = Main_Font, relief = RAISED).grid(row = len(n) + 5, column = 1)
-        
-        
+
+
         self.room_choice_vars = []
         self.room_choice = IntVar()
         for i in range(len(n)):
@@ -222,8 +223,8 @@ class MakeReservationDrop(Frame):
             RB = Checkbutton(self, variable = var)
             self.room_choice_vars.append(var)
             RB.grid(row = i + 2, column = 5)
-        
-        	
+
+
 
     def calc_cost(self):
         cost = 0
@@ -231,6 +232,8 @@ class MakeReservationDrop(Frame):
             cost += i[3]
         return cost
 
+    def get_cards(self):
+        self.options = self.presenter.get_cards()
 
 
 class PaymentPage(Frame):
@@ -352,7 +355,7 @@ class UpdateReservationPage3(Frame):
         self.cost_var = self.calc_cost()
         Entry(self, textvariable = self.cost_var, width = 10).grid(row = len(n) + 2, column = 2)
         Button(self, text = "Submit", font = Main_Font, relief = RAISED, command=lambda: presenter.update_reserv(self.resid, self.start_date, self.end_date, pop_list)).grid(row = len(n) + 3, column = 5)
-        
+
         self.room_choice_vars = []
         self.room_choice = IntVar()
         for i in range(len(n)):
@@ -360,7 +363,7 @@ class UpdateReservationPage3(Frame):
             RB = Checkbutton(self, variable = var)
             self.room_choice_vars.append(var)
             RB.grid(row = i + 2, column = 5)
-        
+
     def calc_cost(self):
         cost = 0
         for i in self.pop_list:
@@ -410,8 +413,8 @@ class CancelReservationPage2(Frame):
             RB = Checkbutton(self, variable = var)
             self.room_choice_vars.append(var)
             RB.grid(row = i + 2, column = 5)
-        
-        
+
+
         Label(self, text = "Total Cost of Reservation", font = Main_Font).grid(row = len(n) + 2, column = 1, columnspan = 2)
         Label(self, text = "Date of Cancellation", font = Main_Font).grid(row = len(n) + 3, column = 1, columnspan = 2)
         Label(self, text = "Amount to be refunded", font = Main_Font).grid(row = len(n) + 4, column = 1 , columnspan = 2)
@@ -451,6 +454,8 @@ class ViewReviewPage2(Frame):
         Label(self, text = "Comment", font = Main_Font).grid(row = 0, column = 1)
         n = pop_list
         # this will be populated with reviews ill use n for now
+        colcount = -1
+        rowcount = 1
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -510,7 +515,7 @@ class ReservationReport(Frame):
 
 
 class PopularRoom(Frame):
-    def __init__(self, parent, presenter):
+    def __init__(self, parent, presenter, pop_list):
         Frame.__init__(self, parent)
         Label(self, text = "Popular Room Category", font = TITLE_FONT).grid(row = 0, column = 1, columnspan = 3)
         Label(self, text = "").grid(row = 1, column = 0)
@@ -519,7 +524,7 @@ class PopularRoom(Frame):
         Label(self, text = "Location", font = Main_Font).grid(row = 2, column = 2)
         Label(self, text = "Total Number of Reservations for Room Category", font = Main_Font).grid(row = 2, column = 3)
 
-        n = []
+        n = pop_list
         #this will be populated with report info
 
         for i in n:
@@ -532,7 +537,7 @@ class PopularRoom(Frame):
         Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.show_frame(MainPageManager)).grid(row = len(n) + 3, column = 1)
 
 class RevenueReport(Frame):
-    def __init__(self, parent, presenter):
+    def __init__(self, parent, presenter, pop_list):
         Frame.__init__(self, parent)
         Label(self, text = "Revenue Report", font = TITLE_FONT).grid(row = 0, column = 1, columnspan = 2)
         Label(self, text = "").grid(row = 1, column = 0)
@@ -540,7 +545,7 @@ class RevenueReport(Frame):
         Label(self, text = "Location", font = Main_Font).grid(row = 2, column = 1)
         Label(self, text = "Total Revenue", font = Main_Font).grid(row = 2, column = 2)
 
-        n = []
+        n = pop_list
         #this will be populated with report info
 
         for i in n:

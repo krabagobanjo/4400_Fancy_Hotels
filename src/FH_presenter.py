@@ -83,7 +83,6 @@ class FH_presenter(Tk):
         return
 
     def get_avail_rooms1(self, location, startdate, enddate):
-        # query = """(M.HreservationID IS NULL OR '{}' > R.end_date OR '{}' < R.start_date) AND L.location = "{}" """
         #check location, startdate, enddate format
         query_list = [enddate, startdate, location]
         plist = self.dbmodel.get_data("find_rooms", query_list)
@@ -118,14 +117,16 @@ class FH_presenter(Tk):
         return
 
     def add_card(self, name, cardnum, expdate, cvv):
-        # self.dbmodel.insert_data([cardnum, name, expdate, cvv, self.curr_user])
+        self.dbmodel.insert_data("add_cardnum", [cardnum, name, expdate, cvv, self.curr_user])
         tkinter.messagebox.showwarning("","Card added!")
         self.restore_frame()
+        self.curr_frame.get_cards()
 
     def del_card(self, cardnum):
-        # self.dbmodel.del_data("delete_cardnum", [cardnum])
+        self.dbmodel.del_data("delete_cardnum", [cardnum])
         tkinter.messagebox.showwarning("","Card removed!")
         self.restore_frame()
+        self.curr_frame.get_cards()
 
     def get_cards(self):
         card_list = self.dbmodel.get_data("find_cardnums", [self.curr_user])
@@ -202,7 +203,8 @@ class FH_presenter(Tk):
 
     def get_reviews(self, location):
         #need updated query for location
-        review_list = []
+        review_list = self.dbmodel.get_data("get_reviews", [location])
+        # review_list = []
         frame = ViewReviewPage2(self.container, self, review_list)
         frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame.destroy()
@@ -214,3 +216,28 @@ class FH_presenter(Tk):
         self.dbmodel.insert_data("give_review", add_list)
         tkinter.messagebox.showwarning("","Review added!")
         self.show_frame(MainPageCustomer)
+
+    def get_pop_rooms(self):
+        room_list = [] #need sql query
+        frame = PopularRoom(self.container, self, room_list)
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.curr_frame.destroy()
+        self.curr_frame = frame
+        self.curr_frame.tkraise()
+
+    def get_rev_report(self):
+        rev_list = []
+        frame = RevenueReport(self.container, self, rev_list)
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.curr_frame.destroy()
+        self.curr_frame = frame
+        self.curr_frame.tkraise()
+
+    def get_reserv_report(self):
+        reserv_list = []
+        # reserv_list = self.dbmodel.get_data
+        frame = ReservationReport(self.container, self, reserv_list)
+        frame.grid(row=0, column=0, sticky="nsew")
+        self.curr_frame.destroy()
+        self.curr_frame = frame
+        self.curr_frame.tkraise()

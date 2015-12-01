@@ -237,7 +237,6 @@ class FH_presenter(Tk):
         self.curr_frame.tkraise()
 
     def get_reserv_report(self):
-        # reserv_list = []
         reserv_list = self.dbmodel.get_data("get_reserv_report", None)
         frame = ReservationReport(self.container, self, reserv_list)
         frame.grid(row=0, column=0, sticky="nsew")

@@ -103,7 +103,7 @@ class MainPageManager(Frame):
         Label(self, text = "Welcome!", font = ("Times", 18)).grid(row = 2, column = 0)
         Button(self, text = "View Reservation Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(ReservationReport)).grid(row = 3, column = 0)
         Button(self, text = "View Popular Room Category Report",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(PopularRoom)).grid(row = 4, column = 0)
-        Button(self, text = "View Revenue Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_rev_report()).grid(row = 5, column = 0)
+        Button(self, text = "View Revenue Report",font = Main_Font, relief = FLAT, command=lambda: presenter.get_reserv_report()).grid(row = 5, column = 0)
 
 class SearchRooms(Frame):
     def __init__(self, parent, presenter):
@@ -499,7 +499,7 @@ class GiveReviewPage(Frame):
         Button(self, text = "Submit", font = Main_Font, relief = RAISED).grid(row = 8, column = 2)
 
 class ReservationReport(Frame):
-    def __init__(self, parent, presenter):
+    def __init__(self, parent, presenter, pop_list):
         Frame.__init__(self, parent)
         Label(self, text = "Reservation Report", font = TITLE_FONT).grid(row = 0, column = 1, columnspan = 2)
         Label(self, text = "").grid(row = 1, column = 0)
@@ -507,9 +507,10 @@ class ReservationReport(Frame):
         Label(self, text = "Location", font = Main_Font).grid(row = 2, column = 1)
         Label(self, text = "Total Number of Reservations", font = Main_Font).grid(row = 2, column = 2)
 
-        n = []
+        n = pop_list
         #this will be populated with report info
-
+        colcount = -1
+        rowcount = 1
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -532,7 +533,8 @@ class PopularRoom(Frame):
 
         n = pop_list
         #this will be populated with report info
-
+        colcount = -1
+        rowcount = 1
         for i in n:
             rowcount = rowcount + 1
             colcount = -1
@@ -553,7 +555,8 @@ class RevenueReport(Frame):
 
         n = pop_list
         #this will be populated with report info
-
+        colcount = -1
+        rowcount = 1
         for i in n:
             rowcount = rowcount + 1
             colcount = -1

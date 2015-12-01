@@ -213,6 +213,8 @@ class FH_presenter(Tk):
         #insert into reservation
         #start_date, end_date, tot_cost, Rcardnum, Rusername
         if self.check_reservation_dates(start_date, end_date):
+            if not cardnum:
+                return
             cost = self.calc_cost_create(start_date, end_date, room_list, intvars)
             self.dbmodel.insert_data("add_reserv_1", [start_date, end_date, cost, cardnum, self.curr_user])
             resid = self.dbmodel.get_data("get_last_reservID")
@@ -357,7 +359,7 @@ class FH_presenter(Tk):
         self.curr_frame.destroy()
         self.curr_frame = frame
         self.curr_frame.tkraise()
-    
+
     def check_duplicate_users(self, username):
     	reserv_list = self.dbmodel.get_data("cust_login", [username])
     	tkinter.messagebox.showwarning("","username already exists")

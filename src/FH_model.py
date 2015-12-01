@@ -22,18 +22,18 @@ class FH_dbmodel(object):
         "add_reserv_2" : "INSERT INTO Reservation_Has_Room VALUES('{L[0]}', '{L[1]}', '{L[2]}')",
         "add_reserv_3" : "INSERT INTO Select_Extra_Bed VALUES('{L[0]}', '{L[1]}', '{L[2]}');",
         "get_last_reservID" : "SELECT LAST_INSERT_ID() AS reservationID",
-        "get_reserv_by_id" : "SELECT start_date, end_date FROM Reservation WHERE reservationID={L[0]}",
+        "get_reserv_by_id" : "SELECT start_date, end_date FROM Reservation WHERE reservationID={L[0]} and cancelled=0",
         "add_cardnum" : "INSERT INTO Payment_Info VALUES({L[0]}, '{L[1]}', '{L[2]}', {L[3]}, '{L[4]}')",
         "delete_cardnum" : "DELETE FROM Payment_Info WHERE cardnum={L[0]}",
-        "get_update_reserv" : """SELECT Hroomnum, category, numpeople, cpday FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum=H.Hroomnum WHERE R.reservationID<>{L[0]} AND M.roomnum in (SELECT M.roomnum FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum = H.Hroomnum WHERE R.reservationID={L[0]}) AND ('{L[1]}' > R.end_date OR '{L[2]}' < R.start_date) """,
+        "get_update_reserv" : """SELECT Hroomnum, category, numpeople, cpday FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum=H.Hroomnum WHERE R.reservationID<>{L[0]} AND M.roomnum in (SELECT M.roomnum FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum = H.Hroomnum WHERE R.reservationID={L[0]}) AND ('{L[1]}' > R.end_date OR '{L[2]}' < R.start_date) AND cancelled=0 """,
         "update_reserv" : """UPDATE Reservation SET start_date='{L[0]}', end_date='{L[1]}' WHERE reservationID='{L[2]}' """,
-        "get_cancel_reserv" : "SELECT * FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum=H.Hroomnum WHERE R.reservationID={L[0]}",
+        "get_cancel_reserv" : "SELECT * FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum=H.Hroomnum WHERE R.reservationID={L[0]} and cancelled=0",
         "cancel_reserv_1" : """DELETE FROM Reservation WHERE reservationID='{L[0]}' """,
         "cancel_reserv_2" : """DELETE FROM Reservation_Has_Room WHERE HreservationID='{L[0]}' """,
-        "cancel_reservation" : "UPDATE Reservation SET Reservation.cancelled=1 WHERE Reservation.reservationID={L[0]}",
+        "cancel_reservation" : "UPDATE Reservation SET Reservation.cancelled=1 WHERE Reservation.reservationID={L[0]} AND cancelled=0",
         "get_reviews" : "SELECT rating, comment FROM Review WHERE location='{L[0]}' ORDER BY rating",
         "reserv_report_view_update" : """DROP VIEW myview; CREATE VIEW myview AS SELECT reservationID, start_date, hlocation FROM Reservation JOIN Reservation_Has_Room on reservationID = HreservationID WHERE cancelled = 0 ORDER BY start_date;""",
-        "get_reserv_report":"""SELECT MONTHNAME(start_date), hlocation, count(*) from myview GROUP BY start_date, hlocation;""",
+        "get_reserv_report":"""SELECT MONTHNAME(start_date), hlocation, count(*) from myview GROUP BY start_date, hlocation ORDER BY start_date;""",
         "pop_report_view_update": """DROP VIEW popularview;CREATE VIEW popularview 
         AS SELECT * FROM Room;
 
@@ -46,14 +46,15 @@ class FH_dbmodel(object):
         SELECT * FROM popularview as s JOIN popularview_two as d ON s.roomnum = d.Hroomnum and s.location = d.Hlocation;
 
         DROP VIEW popularview_four;
-        CREATE VIEW popularview_four AS 
+        CREATE VIEW popularview_four AS
         SELECT MONTHNAME(start_date) as Month, category, location, count(*) as reservations  FROM popularview_three GROUP BY category, Location, Month ORDER BY start_date; """,
-        "get_pop_report":"""SELECT * FROM popularview_four as s 
+        "get_pop_report":"""SELECT * FROM popularview_four as s
         WHERE s.reservations = (
         SELECT MAX(s2.reservations) from popularview_four as s2
         WHERE s.Month = s2.Month AND s.location = s2.location );""",
         "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]})",
         "get_rev_report" : """SELECT *, count(*) from brisview GROUP BY Month, hlocation"""
+
         }
 
     def close_connection(self):

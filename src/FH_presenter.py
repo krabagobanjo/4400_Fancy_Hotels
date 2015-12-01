@@ -35,6 +35,7 @@ class FH_presenter(Tk):
 
     def register(self, username, confirmPassword, password, email):
         # insert_string = "username={}, password={}, email={}"
+        self.check_duplicate_users(username)
         if not self.username_validation(username):
             tkinter.messagebox.showwarning("","invalid username")
         elif len(password) < 5 or len(password) > 15:
@@ -103,11 +104,14 @@ class FH_presenter(Tk):
         present = datetime.now()
         start_date = start
         end_date = end
-
-        newstart = start_date.split("-")
-        newend = end_date.split("-")
-
-        newer_start = datetime(int(newstart[0]), int(newstart[1]), int(newstart[2]))
+        if isinstance(start_date, str):
+            newstart = start_date.split("-")
+            newend = end_date.split("-")
+            newer_start = datetime(int(newstart[0]), int(newstart[1]), int(newstart[2]))
+            newer_end = datetime(int(newend[0]), int(newend[1]), int(newend[2]))
+        else:
+            newer_start = start_date
+            newer_end  = end_date
 
         a = newer_start - present
 
@@ -139,14 +143,19 @@ class FH_presenter(Tk):
         cost = 0
         start_date = start
         end_date = end
-        newstart = start_date.split("-")
-        newend = end_date.split("-")
-        newer_start = datetime(int(newstart[0]), int(newstart[1]), int(newstart[2]))
-        newer_end = datetime(int(newend[0]), int(newend[1]), int(newend[2]))
+        if isinstance(start_date, str):
+            newstart = start_date.split("-")
+            newend = end_date.split("-")
+            newer_start = datetime(int(newstart[0]), int(newstart[1]), int(newstart[2]))
+            newer_end = datetime(int(newend[0]), int(newend[1]), int(newend[2]))
+        else:
+            newer_start = start_date
+            newer_end  = end_date
         timediff = newer_end - newer_start
         timediff = timediff.days
         for room in room_list:
             cost += (room[3] * timediff)
+        return cost
 
 
     def get_avail_rooms1(self, location, startdate, enddate):
@@ -258,11 +267,11 @@ class FH_presenter(Tk):
             return #no entry found
         else:
             # you get list of reservationID start_date end_date tot_cost Rcardnum Rusername cancelled HreservationID Hroomnum Hlocation roomnum location category numpeople cpday
-            start_date = res_entry[0][1]
-            end_date = res_entry[0][2]
+            start_date = str(res_entry[0][1])
+            end_date = str(res_entry[0][2])
             room_list = [(x[10], x[12], x[13], x[14], "") for x in res_entry]
             cost = self.calc_cost(start_date, end_date, room_list)
-            frame = CancelReservationPage2(self.container, self, room_list, start_date, end_date, cost)
+            frame = CancelReservationPage2(self.container, self, resid, room_list, start_date, end_date, cost)
             frame.grid(row=0, column=0, sticky="nsew")
             self.curr_frame.destroy()
             self.curr_frame = frame
@@ -299,6 +308,7 @@ class FH_presenter(Tk):
     def cancel_reservation(self, resid):
         # self.dbmodel.del_data("cancel_reserv_1", [resid])
         # self.dbmodel.del_data("cancel_reserv_2", [resid])
+        self.dbmodel.update_data("cancel_reservation", [resid])
         tkinter.messagebox.showwarning("","Reservation cancelled!")
         self.show_frame(MainPageCustomer)
 
@@ -343,3 +353,8 @@ class FH_presenter(Tk):
         self.curr_frame.destroy()
         self.curr_frame = frame
         self.curr_frame.tkraise()
+    
+    def check_duplicate_users(self, username):
+    	reserv_list = self.dbmodel.get_data("cust_login", [username])
+    	tkinter.messagebox.showwarning("","username already exists")
+    	#print(reserv_list)

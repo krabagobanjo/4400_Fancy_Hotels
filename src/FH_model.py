@@ -54,6 +54,7 @@ class FH_dbmodel(object):
         WHERE s.Month = s2.Month AND s.location = s2.location );""",
         "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]})",
         "get_rev_report" : """SELECT *, count(*) from brisview GROUP BY Month, hlocation"""
+        
         }
 
     def close_connection(self):

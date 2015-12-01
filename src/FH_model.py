@@ -32,9 +32,10 @@ class FH_dbmodel(object):
         "cancel_reserv_2" : """DELETE FROM Reservation_Has_Room WHERE HreservationID='{L[0]}' """,
         "cancel_reservation" : "UPDATE Reservation SET Reservation.cancelled=1 WHERE Reservation.reservationID={L[0]} AND cancelled=0",
         "get_reviews" : "SELECT rating, comment FROM Review WHERE location='{L[0]}' ORDER BY rating",
-        "reserv_report_view_update" : """DROP VIEW myview; CREATE VIEW myview AS SELECT DISTINCT reservationID, DATE(start_date) as Month, hlocation FROM Reservation NATURAL JOIN Reservation_Has_Room WHERE cancelled = 0;""",
-        "get_reserv_report":"""SELECT *, count(*) from myview GROUP BY Month, hlocation;""",
-        "pop_report_view_update": """DROP VIEW popularview;CREATE VIEW popularview
+
+        "reserv_report_view_update" : """DROP VIEW myview; CREATE VIEW myview AS SELECT DISTINCT reservationID, start_date, hlocation FROM Reservation NATURAL JOIN Reservation_Has_Room WHERE cancelled = 0 ORDER BY start_date;""",
+        "get_reserv_report":"""SELECT MONTHNAME(start_date) as Month, hlocation, count(*) from myview GROUP BY Month, hlocation ORDER BY start_date;""",
+        "pop_report_view_update": """DROP VIEW popularview;CREATE VIEW popularview 
         AS SELECT * FROM Room;
 
         DROP VIEW popularview_two;
@@ -54,6 +55,7 @@ class FH_dbmodel(object):
         WHERE s.Month = s2.Month AND s.location = s2.location );""",
         "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]})",
         "get_rev_report" : """SELECT *, count(*) from brisview GROUP BY Month, hlocation"""
+
         }
 
     def close_connection(self):

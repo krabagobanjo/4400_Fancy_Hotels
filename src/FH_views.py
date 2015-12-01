@@ -55,8 +55,8 @@ class RegisterPage(Frame):
 
         Label(self, text = "").grid(row=3, column = 0)
         Label(self, text = "Username", font = Main_Font).grid(row = 4, column = 0, sticky = W)
-        Label(self, text = "Password", font = Main_Font, show='*').grid(row = 5, column = 0, sticky = W)
-        Label(self, text = "Confirm Password", font = Main_Font, show='*').grid(row=6, column = 0, sticky = W)
+        Label(self, text = "Password", font = Main_Font).grid(row = 5, column = 0, sticky = W)
+        Label(self, text = "Confirm Password", font = Main_Font).grid(row=6, column = 0, sticky = W)
         Label(self, text = "Email", font = Main_Font).grid(row = 7, column = 0, sticky = W)
 
         #initialze registration variables
@@ -66,8 +66,8 @@ class RegisterPage(Frame):
         email = StringVar()
 
         Entry(self, width = 20, textvariable = username).grid(row = 4, column = 1)
-        Entry(self, width = 20, textvariable = password).grid(row = 5, column = 1)
-        Entry(self, width = 20, textvariable = confirmPassword).grid(row = 6, column = 1)
+        Entry(self, width = 20, textvariable = password, show='*').grid(row = 5, column = 1)
+        Entry(self, width = 20, textvariable = confirmPassword, show = '*').grid(row = 6, column = 1)
         Entry(self, width = 20, textvariable = email).grid(row = 7, column = 1)
 
         Label(self, text = "").grid(row =8)

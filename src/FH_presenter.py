@@ -35,6 +35,7 @@ class FH_presenter(Tk):
 
     def register(self, username, confirmPassword, password, email):
         # insert_string = "username={}, password={}, email={}"
+        self.check_duplicate_users(username)
         if not self.username_validation(username):
             tkinter.messagebox.showwarning("","invalid username")
         elif len(password) < 5 or len(password) > 15:
@@ -352,3 +353,8 @@ class FH_presenter(Tk):
         self.curr_frame.destroy()
         self.curr_frame = frame
         self.curr_frame.tkraise()
+    
+    def check_duplicate_users(self, username):
+    	reserv_list = self.dbmodel.get_data("cust_login", [username])
+    	tkinter.messagebox.showwarning("","username already exists")
+    	#print(reserv_list)

@@ -156,6 +156,7 @@ class MakeReservations(Frame):
                 else:
                     colcount = colcount + 1
                     Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
+        
         for i in range(len(pop_list)):
             var = IntVar()
             RB = Checkbutton(self, variable = var)
@@ -211,6 +212,16 @@ class MakeReservationDrop(Frame):
 
         Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_frame(self, PaymentPage)).grid(row = len(n) + 4, column = 3)
         Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.credit_card.get())).grid(row =len(n) + 5, column = 4)
+        
+        self.room_choice_vars = []
+        self.room_choice = IntVar()
+        for i in range(len(n)):
+            var = IntVar()
+            RB = Checkbutton(self, variable = var)
+            self.room_choice_vars.append(var)
+            RB.grid(row = i + 2, column = 5)
+        
+	
 
     def calc_cost(self):
         cost = 0

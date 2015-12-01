@@ -84,6 +84,8 @@ class FH_presenter(Tk):
                     self.curr_user = username
                 else:
                     print("Bad password")
+                    tkinter.messagebox.showwarning("","Invalid password!")
+                    
         return
 
     def check_reservation_dates(self, start, end):
@@ -249,7 +251,11 @@ class FH_presenter(Tk):
 
     def get_update_reserv(self, resid, start_date, end_date):
         if self.check_reservation_dates(start_date, end_date):
-            rooms = self.dbmodel.get_data("get_update_reserv", [resid, start_date, end_date])
+            self.dbmodel.mult_queries("update_reserv_view_update")
+            self.dbmodel.update_data("update_reserv_view_update_two",[start_date,end_date])
+            self.dbmodel.mult_queries("update_reserv_view_update_three")
+            rooms = self.dbmodel.get_data("update_reserv_view_update_four",[resid])
+            print(rooms)
             # if len(rooms < 1):
             frame = UpdateReservationPage3(self.container, self, rooms, resid, start_date, end_date)
             frame.grid(row=0, column=0, sticky="nsew")

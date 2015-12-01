@@ -550,6 +550,7 @@ class PopularRoom(Frame):
 class RevenueReport(Frame):
     def __init__(self, parent, presenter, pop_list):
         Frame.__init__(self, parent)
+        Scrollbar(self).pack(side = RIGHT)
         Label(self, text = "Revenue Report", font = TITLE_FONT).grid(row = 0, column = 1, columnspan = 2)
         Label(self, text = "").grid(row = 1, column = 0)
         Label(self, text = "Month", font = Main_Font).grid(row = 2, column = 0)

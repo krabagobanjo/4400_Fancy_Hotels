@@ -31,14 +31,42 @@ class FH_dbmodel(object):
         "cancel_reserv_1" : """DELETE FROM Reservation WHERE reservationID='{L[0]}' """,
         "cancel_reserv_2" : """DELETE FROM Reservation_Has_Room WHERE HreservationID='{L[0]}' """,
         "get_reviews" : "SELECT rating, comment FROM Review WHERE location='{L[0]}' ORDER BY rating",
-        "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]})",
-        "get_reserv_report" : """SELECT *, count(*) from myview GROUP BY Month, hlocation""",
-        "get_rev_report" : """SELECT *, count(*) from brisview GROUP BY Month, hlocation"""
+        "reserv_report_view_update" : """DROP VIEW myview; CREATE VIEW myview AS SELECT DISTINCT reservationID, DATE(start_date) as Month, hlocation FROM Reservation NATURAL JOIN Reservation_Has_Room WHERE cancelled = 0;""",
+        "get_reserv_report":"""SELECT *, count(*) from myview GROUP BY Month, hlocation;""",
+        "pop_report_view_update": """DROP VIEW popularview;CREATE VIEW popularview 
+        AS SELECT * FROM Room;
 
+        DROP VIEW popularview_two;
+        CREATE VIEW popularview_two AS
+        SELECT * FROM Reservation as r JOIN Reservation_Has_Room as c ON r.reservationID = c.HreservationID;
+
+        DROP VIEW popularview_three;
+        CREATE VIEW popularview_three AS
+        SELECT * FROM popularview as s JOIN popularview_two as d ON s.roomnum = d.Hroomnum and s.location = d.Hlocation;
+
+        DROP VIEW popularview_four;
+        CREATE VIEW popularview_four AS 
+        SELECT MONTHNAME(start_date) as Month, category, location, count(*) as reservations  FROM popularview_three GROUP BY category, Location, Month ORDER BY start_date; """,
+        "get_pop_report":"""SELECT * FROM popularview_four as s 
+        WHERE s.reservations = (
+        SELECT MAX(s2.reservations) from popularview_four as s2
+        WHERE s.Month = s2.Month AND s.location = s2.location );""",
+        "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]})",
+        "get_rev_report" : """SELECT *, count(*) from brisview GROUP BY Month, hlocation"""
         }
 
     def close_connection(self):
         self.cnx.close()
+
+    def mult_queries(self,query):
+        cursor = self.cnx.cursor()
+        to_query = self.queries.get(query)
+        statements = to_query.split(";")
+        for i in range (len(statements)-1):
+            print(statements[i])
+            cursor.execute(statements[i] + ";")
+        self.cnx.commit()
+        cursor.close
 
     def insert_data(self, query, to_insert):
         """Insert data into the database.

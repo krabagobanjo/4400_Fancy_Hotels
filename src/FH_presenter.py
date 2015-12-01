@@ -26,6 +26,7 @@ class FH_presenter(Tk):
         frame.tkraise()
         self.curr_user = None
         self.saved_frame = None
+        self.save_list = []
 
     def username_validation(self, username):
         reg = r"((c|m|C|M)\d{4}$)"
@@ -119,27 +120,32 @@ class FH_presenter(Tk):
     def add_card(self, name, cardnum, expdate, cvv):
         self.dbmodel.insert_data("add_cardnum", [cardnum, name, expdate, cvv, self.curr_user])
         tkinter.messagebox.showwarning("","Card added!")
-        self.restore_frame()
-        self.curr_frame.get_cards()
+        self.restore_resdrop_frame()
 
     def del_card(self, cardnum):
         self.dbmodel.del_data("delete_cardnum", [cardnum])
         tkinter.messagebox.showwarning("","Card removed!")
-        self.restore_frame()
-        self.curr_frame.get_cards()
+        self.restore_resdrop_frame()
 
     def get_cards(self):
         card_list = self.dbmodel.get_data("find_cardnums", [self.curr_user])
         return [x[0] for x in card_list]
 
-    def make_reservation(self, room_list, start_date, end_date, cardnum):
+    def make_reservation(self, room_list, start_date, end_date, location, cardnum, intvars):
         #check valid start_date, end_date, cardnum
         #insert into reservation
-        # last_id = self.dbmodel.get_data("get_last_reservID", None)
-        #add_reserv_2
+        #start_date, end_date, tot_cost, Rcardnum, Rusername
         cost = self.curr_frame.calc_cost()
-        last_id = 42
-        frame = ConfirmationPage(self.container, self, last_id)
+        self.dbmodel.insert_data("add_reserv_1", [start_date, end_date, cost, cardnum, self.curr_user])
+        resid = self.dbmodel.get_data("get_last_reservID")
+        #HreservationID, Hroomnum, Hlocation
+        for room in room_list:
+            self.dbmodel.insert_data("add_reserv_2" [resid, room[0], location])
+        #SreservationID, Srooomnum, Slocation 3
+        for i in range(len(intvars)):
+            if intvars[i].get() == 1:
+                self.dbmodel.insert_data("add_reserv_3", [resid, room_list[i][0], location])
+        frame = ConfirmationPage(self.container, self, resid)
         frame.grid(row=0, column=0, sticky="nsew")
         frame.tkraise()
         self.curr_frame.destroy()
@@ -198,6 +204,21 @@ class FH_presenter(Tk):
         self.curr_frame = self.saved_frame
         self.curr_frame.tkraise()
 
+    def save_resdrop_frame(self, next_frame, pop_list, startdate, enddate, location):
+        self.save_list = [pop_list, startdate, enddate, location]
+        self.curr_frame = next_frame(self.container, self)
+        self.curr_frame.grid(row=0, column=0, sticky="nsew")
+        self.curr_frame.tkraise()
+
+    def restore_resdrop_frame(self):
+        pop_list = self.save_list[0]
+        startdate = self.save_list[1]
+        enddate = self.save_list[2]
+        location = self.save_list[3]
+        self.curr_frame.destroy()
+        self.curr_frame = MakeReservationDrop(self.container, self, pop_list, startdate, enddate, location)
+        self.curr_frame.tkraise()
+
     def cancel_reservation(self, resid):
         # self.dbmodel.del_data("cancel_reserv_1", [resid])
         # self.dbmodel.del_data("cancel_reserv_2", [resid])
@@ -229,7 +250,7 @@ class FH_presenter(Tk):
         self.curr_frame.tkraise()
 
     def get_rev_report(self):
-        rev_list = []
+        rev_list = self.dbmodel.get_data("get_rev_report")
         frame = RevenueReport(self.container, self, rev_list)
         frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame.destroy()
@@ -237,7 +258,7 @@ class FH_presenter(Tk):
         self.curr_frame.tkraise()
 
     def get_reserv_report(self):
-        reserv_list = self.dbmodel.get_data("get_reserv_report", None)
+        reserv_list = self.dbmodel.get_data("get_reserv_report")
         frame = ReservationReport(self.container, self, reserv_list)
         frame.grid(row=0, column=0, sticky="nsew")
         self.curr_frame.destroy()

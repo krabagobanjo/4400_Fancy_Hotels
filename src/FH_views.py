@@ -200,7 +200,7 @@ class MakeReservationDrop(Frame):
         self.end_date_var = StringVar()
         # self.end_date_var.set(enddate)
         self.total_cost_var = StringVar()
-        self.total_cost_var.set(self.calc_cost())
+
 
         Entry(self, textvariable = self.start_date_var).grid(row = len(n)+ 2, column = 1, columnspan = 2)
         Entry(self, textvariable = self.end_date_var).grid(row = len(n) + 2, column = 4, columnspan = 2)
@@ -208,15 +208,15 @@ class MakeReservationDrop(Frame):
 
         self.credit_card = StringVar()
         # options = [ "hey", "bye" ]
-        self.options = presenter.get_cards()
+        options = presenter.get_cards()
         #these are just test values this would be the populated list of credit cards
-        credit_card = OptionMenu (self, self.credit_card, *self.options)
+        credit_card = OptionMenu (self, self.credit_card, *options)
         credit_card.configure(font = Main_Font)
         credit_card.grid(row = len(n)+ 4, column = 1, columnspan = 2)
 
-        Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_frame(self, PaymentPage)).grid(row = len(n) + 4, column = 3)
-        Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.credit_card.get())).grid(row =len(n) + 5, column = 4)
-        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED).grid(row = len(n) + 5, column = 1)
+        Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_resdrop_frame(PaymentPage, self.pop_list, self.start_date, self.end_date, self.location)).grid(row = len(n) + 4, column = 3)
+        Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, startdate, enddate, self.location, self.credit_card.get(), self.room_choice_vars)).grid(row =len(n) + 5, column = 4)
+        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED, command=lambda: self.calc_cost(self.room_choice_vars)).grid(row = len(n) + 5, column = 1)
 
 
         self.room_choice_vars = []
@@ -226,18 +226,21 @@ class MakeReservationDrop(Frame):
             RB = Checkbutton(self, variable = var)
             self.room_choice_vars.append(var)
             RB.grid(row = i + 2, column = 5)
+        self.total_cost_var.set(self.calc_cost(self.room_choice_vars))
 
 
-
-    def calc_cost(self):
+    def calc_cost(self, intvars):
         cost = 0
         for i in self.pop_list:
             cost += i[3]
+        for i in range(len(intvars)):
+            if intvars[i].get() == 1:
+                cost+=self.pop_list[i][4]
+        print(cost)
         return cost
 
-    def get_cards(self):
-        self.options = self.presenter.get_cards()
-        print("Get cards run")
+    def set_cost(self, intvars):
+        self.total_cost_var.set(self.calc_cost(intvars))
 
 
 class PaymentPage(Frame):
@@ -542,7 +545,7 @@ class PopularRoom(Frame):
                 colcount = colcount + 1
                 Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
 
-        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.show_frame(MainPageManager)).grid(row = len(n) + 3, column = 1)
+        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.get_pop_rooms()).grid(row = len(n) + 3, column = 1)
 
 class RevenueReport(Frame):
     def __init__(self, parent, presenter, pop_list):
@@ -564,4 +567,4 @@ class RevenueReport(Frame):
                 colcount = colcount + 1
                 Label(self, text = value, font = Main_Font).grid(row = rowcount, column = colcount)
 
-        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.show_frame(MainPageManager)).grid(row = len(n) + 3, column = 1)
+        Button(self, text = "Back", font = Main_Font, relief = RAISED,command=lambda: presenter.get_rev_report()).grid(row = len(n) + 3, column = 1)

@@ -210,7 +210,7 @@ class MakeReservationDrop(Frame):
 
         self.credit_card = StringVar()
         # options = [ "hey", "bye" ]
-        options = presenter.get_cards()
+        options = presenter.get_cards() if presenter.get_cards() else [None]
         #these are just test values this would be the populated list of credit cards
         credit_card = OptionMenu (self, self.credit_card, *options)
         credit_card.configure(font = Main_Font)
@@ -349,7 +349,7 @@ class UpdateReservationPage3(Frame):
         Label(self, text = "Total Cost Updated", font = Main_Font).grid(row = len(n) + 2, column = 0, columnspan = 2)
         self.cost_var = IntVar()
         Entry(self, textvariable = self.cost_var, width = 10).grid(row = len(n) + 2, column = 2)
-        Button(self, text = "Submit", font = Main_Font, relief = RAISED, command=lambda: presenter.update_reserv(self.resid, self.start_date, self.end_date)).grid(row = len(n) + 3, column = 5)
+        Button(self, text = "Submit", font = Main_Font, relief = RAISED, command=lambda: presenter.update_reserv(self.resid, self.start_date, self.end_date, presenter.calc_cost(start_date, end_date, pop_list, self.extra_bed_list))).grid(row = len(n) + 3, column = 5)
 
         self.room_choice_vars = []
         self.room_choice = IntVar()

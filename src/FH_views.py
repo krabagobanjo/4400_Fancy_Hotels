@@ -348,7 +348,7 @@ class UpdateReservationPage3(Frame):
 
         Label(self, text = "Total Cost Updated", font = Main_Font).grid(row = len(n) + 2, column = 0, columnspan = 2)
         self.cost_var = IntVar()
-        self.cost_var = self.calc_cost()
+        self.cost_var.set(presenter.calc_cost(start_date, end_date, pop_list))
         Entry(self, textvariable = self.cost_var, width = 10).grid(row = len(n) + 2, column = 2)
         Button(self, text = "Submit", font = Main_Font, relief = RAISED, command=lambda: presenter.update_reserv(self.resid, self.start_date, self.end_date)).grid(row = len(n) + 3, column = 5)
 
@@ -359,12 +359,6 @@ class UpdateReservationPage3(Frame):
             RB = Checkbutton(self, variable = var)
             self.room_choice_vars.append(var)
             RB.grid(row = i + 2, column = 5)
-
-    def calc_cost(self):
-        cost = 0
-        for i in self.pop_list:
-            cost += i[3]
-        return cost
 
 class CancelReservationPage1(Frame):
     def __init__(self, parent, presenter):
@@ -491,7 +485,7 @@ class GiveReviewPage(Frame):
 
         self.comment_var = StringVar()
         Entry(self, textvariable = self.comment_var).grid(row = 6, column = 1, columnspan = 2)
-        Button(self, text = "Submit", font = Main_Font, relief = RAISED).grid(row = 8, column = 2)
+        Button(self, text = "Submit", font = Main_Font, relief = RAISED, command=lambda: presenter.add_review(self.rating.get(), self.location.get(), self.comment_var.get())).grid(row = 8, column = 2)
 
 class ReservationReport(Frame):
     def __init__(self, parent, presenter, pop_list):

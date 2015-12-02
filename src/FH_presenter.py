@@ -35,18 +35,18 @@ class FH_presenter(Tk):
 
     def register(self, username, confirmPassword, password, email):
         # insert_string = "username={}, password={}, email={}"
-        self.check_duplicate_users(username)
-        if not self.username_validation(username):
-            tkinter.messagebox.showwarning("","invalid username")
-        elif len(password) < 5 or len(password) > 15:
-            tkinter.messagebox.showwarning("","invalid password, must be between 5 and 15 characters")
-        elif password != confirmPassword:
-            tkinter.messagebox.showwarning("","password doesnt equal confirm password")
-        elif len(username) == 0 or len(confirmPassword) == 0 or len(password) == 0 or len(email) == 0:
-            tkinter.messagebox.showwarning("","empty fields are not allowed")
-        else:
-            self.dbmodel.insert_data("newcust",[username,password,email] )
-            self.show_frame(MainPageManager)
+        if not self.check_duplicate_users(username):
+            if not self.username_validation(username):
+                tkinter.messagebox.showwarning("","invalid username")
+            elif len(password) < 5 or len(password) > 15:
+                tkinter.messagebox.showwarning("","invalid password, must be between 5 and 15 characters")
+            elif password != confirmPassword:
+                tkinter.messagebox.showwarning("","password doesnt equal confirm password")
+            elif len(username) == 0 or len(confirmPassword) == 0 or len(password) == 0 or len(email) == 0:
+                tkinter.messagebox.showwarning("","empty fields are not allowed")
+            else:
+                self.dbmodel.insert_data("newcust",[username,password,email] )
+                self.show_frame(MainPageManager)
 
 
     def show_frame(self, caller):
@@ -85,7 +85,7 @@ class FH_presenter(Tk):
                 else:
                     print("Bad password")
                     tkinter.messagebox.showwarning("","Invalid password!")
-                    
+
         return
 
     def check_reservation_dates(self, start, end):
@@ -273,6 +273,7 @@ class FH_presenter(Tk):
 
     def get_cancel_reserv(self, resid):
         res_entry = self.dbmodel.get_data("get_cancel_reserv", [resid])
+        print(res_entry)
         if len(res_entry) < 1:
             return #no entry found
         else:
@@ -366,5 +367,9 @@ class FH_presenter(Tk):
 
     def check_duplicate_users(self, username):
     	reserv_list = self.dbmodel.get_data("cust_login", [username])
-    	tkinter.messagebox.showwarning("","username already exists")
+        if len(reserv_list) > 0:
+            tkinter.messagebox.showwarning("","username already exists")
+            return False
+        else:
+            return True
     	#print(reserv_list)

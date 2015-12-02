@@ -35,7 +35,7 @@ class FH_dbmodel(object):
         "get_reviews" : "SELECT rating, comment FROM Review WHERE location='{L[0]}' ORDER BY rating",
         "reserv_report_view_update" : """DROP VIEW myview; CREATE VIEW myview AS SELECT reservationID, start_date, hlocation FROM Reservation JOIN Reservation_Has_Room on reservationID = HreservationID WHERE cancelled = 0 ORDER BY start_date;""",
         "get_reserv_report":"""SELECT MONTHNAME(start_date), hlocation, count(*) from myview GROUP BY start_date, hlocation ORDER BY start_date;""",
-        "pop_report_view_update": """DROP VIEW popularview;CREATE VIEW popularview 
+        "pop_report_view_update": """DROP VIEW popularview;CREATE VIEW popularview
         AS SELECT * FROM Room;
 
         DROP VIEW popularview_two;
@@ -53,16 +53,16 @@ class FH_dbmodel(object):
         WHERE s.reservations = (
         SELECT MAX(s2.reservations) from popularview_four as s2
         WHERE s.Month = s2.Month AND s.location = s2.location );""",
-        "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]})",
-        
+        "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]}, {L[2]}, {L[3]})",
+
         "rev_report_view_update": """ DROP view brisview; CREATE VIEW brisview AS SELECT tot_cost, start_date, hlocation FROM Reservation JOIN Reservation_Has_Room on reservationID = HreservationID WHERE cancelled = 0 ORDER BY start_date;""",
         "get_rev_report" : """SELECT MONTHNAME(start_date), hlocation, SUM(tot_cost) from brisview GROUP BY start_date, hlocation ORDER BY start_date;""",
 
         "update_reserv_view_update":"""DROP VIEW update_reservation_one;
         CREATE VIEW update_reservation_one AS
-        SELECT * FROM Reservation R 
-        INNER JOIN 
-        Reservation_Has_Room H 
+        SELECT * FROM Reservation R
+        INNER JOIN
+        Reservation_Has_Room H
         ON R.reservationID=H.HreservationID;
         DROP VIEW update_reservation_two;
         CREATE VIEW update_reservation_two AS

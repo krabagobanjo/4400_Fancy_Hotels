@@ -53,7 +53,7 @@ class FH_dbmodel(object):
         WHERE s.reservations = (
         SELECT MAX(s2.reservations) from popularview_four as s2
         WHERE s.Month = s2.Month AND s.location = s2.location );""",
-        "give_review" : "INSERT INTO Review VALUES({L[0]}, {L[1]}, {L[2]}, {L[3]})",
+        "give_review" : "INSERT INTO Review (rating,location,comment,Rusername) VALUES('{L[0]}', '{L[1]}', '{L[2]}', '{L[3]}')",
 
         "rev_report_view_update": """ DROP view brisview; CREATE VIEW brisview AS SELECT tot_cost, start_date, hlocation FROM Reservation JOIN Reservation_Has_Room on reservationID = HreservationID WHERE cancelled = 0 ORDER BY start_date;""",
         "get_rev_report" : """SELECT MONTHNAME(start_date), hlocation, SUM(tot_cost) from brisview GROUP BY start_date, hlocation ORDER BY start_date;""",

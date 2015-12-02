@@ -217,7 +217,7 @@ class MakeReservationDrop(Frame):
 
         Button(self, text = "Edit Cards", font = Main_Font, relief = FLAT, command = lambda: presenter.save_resdrop_frame(PaymentPage, self.pop_list, self.start_date, self.end_date, self.location)).grid(row = len(n) + 4, column = 3)
         Button(self, text = "Submit", font = Main_Font, command = lambda: presenter.make_reservation(pop_list, self.start_date_var.get(), self.end_date_var.get(), self.location, self.credit_card.get(), self.room_choice_vars)).grid(row =len(n) + 5, column = 4)
-        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED, command=lambda: presenter.calc_cost_create(self.start_date, self.end_date, self.pop_list, self.room_choice_vars)).grid(row = len(n) + 5, column = 1)
+        Button(self, text = "Update Cost", font = Main_Font, relief = RAISED, command=lambda: self.set_cost(self.room_choice_vars)).grid(row = len(n) + 5, column = 1)
 
         self.room_choice_vars = []
         self.room_choice = IntVar()

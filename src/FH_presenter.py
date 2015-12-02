@@ -46,7 +46,9 @@ class FH_presenter(Tk):
                 tkinter.messagebox.showwarning("","empty fields are not allowed")
             else:
                 self.dbmodel.insert_data("newcust",[username,password,email] )
-                self.show_frame(MainPageManager)
+                self.show_frame(LoginPage)
+        else:
+            tkinter.messagebox.showwarning("","Username taken")
 
 
     def show_frame(self, caller):
@@ -257,7 +259,7 @@ class FH_presenter(Tk):
             self.dbmodel.update_data("update_reserv_view_update_two",[start_date,end_date])
             self.dbmodel.mult_queries("update_reserv_view_update_three")
             rooms = self.dbmodel.get_data("update_reserv_view_update_four",[resid])
-            print(rooms)
+            rooms = [(room[0], room[2], room[3], room[4], room[7]) for room in rooms]
             # if len(rooms < 1):
             frame = UpdateReservationPage3(self.container, self, rooms, resid, start_date, end_date)
             frame.grid(row=0, column=0, sticky="nsew")
@@ -280,7 +282,7 @@ class FH_presenter(Tk):
             # you get list of reservationID start_date end_date tot_cost Rcardnum Rusername cancelled HreservationID Hroomnum Hlocation roomnum location category numpeople cpday
             start_date = str(res_entry[0][1])
             end_date = str(res_entry[0][2])
-            room_list = [(x[10], x[12], x[13], x[14], "") for x in res_entry]
+            room_list = [(x[10], x[12], x[13], x[14], x[15], x[16]) for x in res_entry]
             cost = self.calc_cost(start_date, end_date, room_list)
             frame = CancelReservationPage2(self.container, self, resid, room_list, start_date, end_date, cost)
             frame.grid(row=0, column=0, sticky="nsew")
@@ -369,6 +371,6 @@ class FH_presenter(Tk):
         reserv_list = self.dbmodel.get_data("cust_login", [username])
         if len(reserv_list) > 0:
             tkinter.messagebox.showwarning("","username already exists")
-            return False
-        else:
             return True
+        else:
+            return False

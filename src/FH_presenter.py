@@ -97,9 +97,11 @@ class FH_presenter(Tk):
         newend = end_date.split("-")
 
         if datetime(int(newstart[0]), int(newstart[1]), int(newstart[2])) < present:
-            return False
+        	tkinter.messagebox.showwarning("","Error! Invalid date")
+        	return False
         if datetime(int(newstart[0]), int(newstart[1]), int(newstart[2])) > datetime(int(newend[0]), int(newend[1]), int(newend[2])):
-            return False
+        	tkinter.messagebox.showwarning("","Error! Invalid date")
+        	return False
         return True
 
     def calc_refund(self, start, end, total_cost):

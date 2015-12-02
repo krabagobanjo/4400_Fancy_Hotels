@@ -76,15 +76,24 @@ class FH_dbmodel(object):
         LEFT JOIN
         update_reservation_one t1
         ON t1.Hroomnum = t2.roomnum and t1.Hlocation = t2.location;
+
+        DROP VIEW update_reservation_three_half;
+        CREATE VIEW update_reservation_three_half AS
+        SELECT * FROM update_reservation_three t1
+        LEFT JOIN
+        Select_Extra_Bed t2
+        ON t1.reservationID = t2.SreservationID;
+
+
         DROP VIEW update_reservation_four;""",
 
         "update_reserv_view_update_two":"""CREATE VIEW update_reservation_four AS
-        SELECT roomnum, location FROM update_reservation_three t1
+        SELECT roomnum, location FROM update_reservation_three_half t1
         WHERE start_date > {L[0]} AND end_date < {L[1]} OR start_date < {L[0]} AND end_date > {L[1]} OR start_date > {L[0]} AND start_date < {L[1]} AND end_date > {L[1]} OR start_date < {L[0]} AND end_date > {L[0]} AND end_date < {L[1]};""",
 
         "update_reserv_view_update_three":"""DROP VIEW update_reservation_five;
         CREATE VIEW update_reservation_five AS
-        SELECT * FROM update_reservation_three t1
+        SELECT * FROM update_reservation_three_half t1
         WHERE NOT EXISTS (SELECT 1 FROM update_reservation_four t2 WHERE t1.roomnum = t2.roomnum AND t1.location = t2.location);""",
 
         "update_reserv_view_update_four":"""SELECT * FROM update_reservation_five WHERE reservationID='{L[0]}'""",

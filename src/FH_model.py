@@ -14,7 +14,7 @@ class FH_dbmodel(object):
             passwd="YlVIp1tI", db="cs4400_Group_76")
         self.queries = {
         "cust_login" : "SELECT * FROM Customer WHERE username='{L[0]}'",
-        "newcust" : "INSERT INTO Customer VALUES({L[0]}, {L[1]}, {L[2]})",
+        "newcust" : "INSERT INTO Customer VALUES('{L[0]}', '{L[1]}', '{L[2]}')",
         "mgmt_login" : "SELECT * FROM Management WHERE username='{L[0]}'",
         "find_rooms" : """SELECT L.roomnum AS 'Room Number', L.category, L.numpeople, L.cpday, X.bedcost FROM Room L INNER JOIN Extra_Bed X ON L.roomnum = X.Rroomnum AND L.location = X.Rlocation LEFT JOIN Reservation_Has_Room M ON L.roomnum = M.Hroomnum LEFT JOIN Reservation R ON M.HreservationID = R.reservationID WHERE(M.HreservationID IS NULL OR '{L[0]}' > R.end_date OR '{L[1]}') AND L.location = "{L[2]}" GROUP BY roomnum, category, numpeople, cpday, bedcost """,
         "find_cardnums" : "SELECT * FROM Payment_Info WHERE Pusername='{L[0]}'",
@@ -23,8 +23,8 @@ class FH_dbmodel(object):
         "add_reserv_3" : "INSERT INTO Select_Extra_Bed VALUES('{L[0]}', '{L[1]}', '{L[2]}');",
         "get_last_reservID" : "SELECT LAST_INSERT_ID() AS reservationID",
         "get_reserv_by_id" : "SELECT start_date, end_date FROM Reservation WHERE reservationID={L[0]} and cancelled=0",
-        "add_cardnum" : "INSERT INTO Payment_Info VALUES({L[0]}, '{L[1]}', '{L[2]}', {L[3]}, '{L[4]}')",
-        "delete_cardnum" : "DELETE FROM Payment_Info WHERE cardnum={L[0]}",
+        "add_cardnum" : "INSERT INTO Payment_Info VALUES('{L[0]}', '{L[1]}', '{L[2]}', '{L[3]}', '{L[4]}')",
+        "delete_cardnum" : "DELETE FROM Payment_Info WHERE cardnum='{L[0]}'",
         "get_update_reserv" : """SELECT Hroomnum, category, numpeople, cpday FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum=H.Hroomnum WHERE R.reservationID<>{L[0]} AND M.roomnum in (SELECT M.roomnum FROM Reservation R INNER JOIN Reservation_Has_Room H ON R.reservationID=H.HreservationID INNER JOIN Room M ON M.roomnum = H.Hroomnum WHERE R.reservationID={L[0]}) AND ('{L[1]}' > R.end_date OR '{L[2]}' < R.start_date) AND cancelled=0 """,
         "update_reserv" : """UPDATE Reservation SET start_date='{L[0]}', end_date='{L[1]}' WHERE reservationID='{L[2]}' """,
 

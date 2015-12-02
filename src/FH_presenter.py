@@ -266,7 +266,7 @@ class FH_presenter(Tk):
     def get_update_reserv(self, resid, start_date, end_date):
         if self.check_reservation_dates(start_date, end_date):
             self.dbmodel.mult_queries("update_reserv_view_update")
-            self.dbmodel.update_data("update_reserv_view_update_two",[start_date,end_date,total_cost])
+            self.dbmodel.update_data("update_reserv_view_update_two",[start_date,end_date])
             self.dbmodel.mult_queries("update_reserv_view_update_three")
             room_list = self.dbmodel.get_data("update_reserv_view_update_four",[resid, self.curr_user])
             rooms = [(room[0], room[2], room[3], room[4], room[7], room[17]) for room in room_list]

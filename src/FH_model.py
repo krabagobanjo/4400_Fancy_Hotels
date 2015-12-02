@@ -16,7 +16,7 @@ class FH_dbmodel(object):
         "cust_login" : "SELECT * FROM Customer WHERE username='{L[0]}'",
         "newcust" : "INSERT INTO Customer VALUES({L[0]}, {L[1]}, {L[2]})",
         "mgmt_login" : "SELECT * FROM Management WHERE username='{L[0]}'",
-        "find_rooms" : """SELECT L.roomnum AS 'Room Number', L.category, L.numpeople, L.cpday, X.bedcost FROM Room L INNER JOIN Extra_Bed X ON L.roomnum = X.Rroomnum AND L.location = X.Rlocation LEFT JOIN Reservation_Has_Room M ON L.roomnum = M.Hroomnum LEFT JOIN Reservation R ON M.HreservationID = R.reservationID WHERE(M.HreservationID IS NULL OR '{L[0]}' > R.end_date OR '{L[1]}') AND L.location = "{L[2]}" """,
+        "find_rooms" : """SELECT L.roomnum AS 'Room Number', L.category, L.numpeople, L.cpday, X.bedcost FROM Room L INNER JOIN Extra_Bed X ON L.roomnum = X.Rroomnum AND L.location = X.Rlocation LEFT JOIN Reservation_Has_Room M ON L.roomnum = M.Hroomnum LEFT JOIN Reservation R ON M.HreservationID = R.reservationID WHERE(M.HreservationID IS NULL OR '{L[0]}' > R.end_date OR '{L[1]}') AND L.location = "{L[2]}" GROUP BY roomnum, category, numpeople, cpday, bedcost """,
         "find_cardnums" : "SELECT * FROM Payment_Info WHERE Pusername='{L[0]}'",
         "add_reserv_1" : "INSERT INTO Reservation(start_date, end_date, tot_cost, Rcardnum, Rusername) VALUES('{L[0]}', '{L[1]}', '{L[2]}', '{L[3]}', '{L[4]}')",
         "add_reserv_2" : "INSERT INTO Reservation_Has_Room VALUES('{L[0]}', '{L[1]}', '{L[2]}')",

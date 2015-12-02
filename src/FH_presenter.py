@@ -33,11 +33,18 @@ class FH_presenter(Tk):
         mch = re.findall(reg, username)
         return True if len(mch) > 0 and mch[0][0] == username else False
 
+    def email_validation(self,email):
+        reg = r"[^@]+@[^@]+\.[^@]+"
+        mch = re.findall(reg, email)
+        return True if len(mch) > 0 and mch[0][0] == email else False
+
     def register(self, username, confirmPassword, password, email):
         # insert_string = "username={}, password={}, email={}"
         if not self.check_duplicate_users(username):
             if not self.username_validation(username):
                 tkinter.messagebox.showwarning("","invalid username")
+            elif not self.email_validation(email):
+                tkinter.messagebox.showwarning("","invalid email")
             elif len(password) < 5 or len(password) > 15:
                 tkinter.messagebox.showwarning("","invalid password, must be between 5 and 15 characters")
             elif password != confirmPassword:
@@ -97,11 +104,11 @@ class FH_presenter(Tk):
         newend = end_date.split("-")
 
         if datetime(int(newstart[0]), int(newstart[1]), int(newstart[2])) < present:
-        	tkinter.messagebox.showwarning("","Error! Invalid date")
-        	return False
+            tkinter.messagebox.showwarning("","Error! Invalid date")
+            return False
         if datetime(int(newstart[0]), int(newstart[1]), int(newstart[2])) > datetime(int(newend[0]), int(newend[1]), int(newend[2])):
-        	tkinter.messagebox.showwarning("","Error! Invalid date")
-        	return False
+            tkinter.messagebox.showwarning("","Error! Invalid date")
+            return False
         return True
 
     def calc_refund(self, start, end, total_cost):
@@ -366,10 +373,10 @@ class FH_presenter(Tk):
         self.curr_frame.tkraise()
 
     def check_duplicate_users(self, username):
-    	reserv_list = self.dbmodel.get_data("cust_login", [username])
-        if len(reserv_list) > 0:
+        reserv_list = self.dbmodel.get_data("cust_login", [username])
+        if len(reserv_list)>0:
             tkinter.messagebox.showwarning("","username already exists")
             return False
         else:
             return True
-    	#print(reserv_list)
+        #print(reserv_list)

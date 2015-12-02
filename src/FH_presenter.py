@@ -267,7 +267,9 @@ class FH_presenter(Tk):
             self.dbmodel.update_data("update_reserv_view_update_two",[start_date,end_date])
             self.dbmodel.mult_queries("update_reserv_view_update_three")
             rooms = self.dbmodel.get_data("update_reserv_view_update_four",[resid])
+            print(rooms)
             rooms = [(room[0], room[2], room[3], room[4], room[7]) for room in rooms]
+            
             # if len(rooms < 1):
             frame = UpdateReservationPage3(self.container, self, rooms, resid, start_date, end_date)
             frame.grid(row=0, column=0, sticky="nsew")

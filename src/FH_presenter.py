@@ -42,7 +42,7 @@ class FH_presenter(Tk):
     def register(self, username, confirmPassword, password, email):
         # insert_string = "username={}, password={}, email={}"
         if not self.check_duplicate_users(username):
-            if not self.username_validation(username):
+            if not self.username_validation(username) or username[0].lower == 'm':
                 tkinter.messagebox.showwarning("","invalid username")
             elif not self.email_validation(email):
                 tkinter.messagebox.showwarning("","invalid email")
@@ -153,7 +153,7 @@ class FH_presenter(Tk):
                 cost+=(room_list[i][4] * timediff)
         return cost
 
-    def calc_cost(self, start, end, room_list):
+    def calc_cost(self, start, end, room_list, bed_list):
         cost = 0
         start_date = start
         end_date = end
@@ -169,6 +169,8 @@ class FH_presenter(Tk):
         timediff = timediff.days
         for room in room_list:
             cost += (room[3] * timediff)
+        for bednum in bed_list:
+            cost += (room_list[bednum][4] * timediff)
         return cost
 
 
@@ -247,7 +249,7 @@ class FH_presenter(Tk):
             self.curr_frame = frame
 
     def get_reserv_by_id(self, resid):
-        res_entry = self.dbmodel.get_data("get_reserv_by_id", [resid])
+        res_entry = self.dbmodel.get_data("get_reserv_by_id", [resid, self.curr_user])
         if len(res_entry) < 1:
             return #no entry found
         elif len(res_entry) > 1:
@@ -266,10 +268,9 @@ class FH_presenter(Tk):
             self.dbmodel.mult_queries("update_reserv_view_update")
             self.dbmodel.update_data("update_reserv_view_update_two",[start_date,end_date])
             self.dbmodel.mult_queries("update_reserv_view_update_three")
-            rooms = self.dbmodel.get_data("update_reserv_view_update_four",[resid])
-            print(rooms)
-            rooms = [(room[0], room[2], room[3], room[4], room[7]) for room in rooms]
-            
+            room_list = self.dbmodel.get_data("update_reserv_view_update_four",[resid, self.curr_user])
+            rooms = [(room[0], room[2], room[3], room[4], room[7], room[17]) for room in room_list]
+
             # if len(rooms < 1):
             frame = UpdateReservationPage3(self.container, self, rooms, resid, start_date, end_date)
             frame.grid(row=0, column=0, sticky="nsew")
@@ -284,7 +285,7 @@ class FH_presenter(Tk):
             self.show_frame(MainPageCustomer)
 
     def get_cancel_reserv(self, resid):
-        res_entry = self.dbmodel.get_data("get_cancel_reserv", [resid])
+        res_entry = self.dbmodel.get_data("get_cancel_reserv", [resid, self.curr_user])
         print(res_entry)
         if len(res_entry) < 1:
             return #no entry found

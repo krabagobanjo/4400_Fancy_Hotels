@@ -263,7 +263,7 @@ class FH_presenter(Tk):
             self.curr_frame = frame
             self.curr_frame.tkraise()
 
-    def get_update_reserv(self, resid, start_date, end_date, total_cost):
+    def get_update_reserv(self, resid, start_date, end_date):
         if self.check_reservation_dates(start_date, end_date):
             self.dbmodel.mult_queries("update_reserv_view_update")
             self.dbmodel.update_data("update_reserv_view_update_two",[start_date,end_date,total_cost])
@@ -278,9 +278,9 @@ class FH_presenter(Tk):
             self.curr_frame = frame
             self.curr_frame.tkraise()
 
-    def update_reserv(self, resid, start_date, end_date):
+    def update_reserv(self, resid, start_date, end_date, total_cost):
         if self.check_reservation_dates(start_date, end_date):
-            self.dbmodel.update_data("update_reserv", [start_date, end_date, resid])
+            self.dbmodel.update_data("update_reserv", [start_date, end_date, resid, total_cost])
             tkinter.messagebox.showwarning("","Reservation updated")
             self.show_frame(MainPageCustomer)
 

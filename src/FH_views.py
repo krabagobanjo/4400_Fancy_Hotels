@@ -89,10 +89,9 @@ class MainPageCustomer(Frame):
         Button(self, text = "Cancel Reservation",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(CancelReservationPage1)).grid(row = 6, column = 0)
         Button(self, text = "Provide Feedback",font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(GiveReviewPage)).grid(row = 7, column = 0)
         Button(self, text = "View Feedback",font = Main_Font, relief = FLAT,command=lambda: presenter.show_frame(ViewReviewPage1)).grid(row = 8, column = 0)
-        Button(self, text = "Edit Payment Info", font = Main_Font, relief = FLAT, command=lambda: presenter.show_frame(PaymentPage)).grid(row = 9, column = 0)
         button = Button(self, text="Go to the Login page",font = Main_Font,
                            command=lambda: presenter.show_frame(LoginPage))
-        button.grid(row = 10, column = 0)
+        button.grid(row = 9, column = 0)
 
 
 

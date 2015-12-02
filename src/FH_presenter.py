@@ -366,10 +366,9 @@ class FH_presenter(Tk):
         self.curr_frame.tkraise()
 
     def check_duplicate_users(self, username):
-    	reserv_list = self.dbmodel.get_data("cust_login", [username])
+        reserv_list = self.dbmodel.get_data("cust_login", [username])
         if len(reserv_list) > 0:
             tkinter.messagebox.showwarning("","username already exists")
             return False
         else:
             return True
-    	#print(reserv_list)

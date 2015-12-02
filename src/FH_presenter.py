@@ -34,9 +34,10 @@ class FH_presenter(Tk):
         return True if len(mch) > 0 and mch[0][0] == username else False
 
     def email_validation(self,email):
-        reg = r"[^@]+@[^@]+\.[^@]+"
-        mch = re.findall(reg, email)
-        return True if len(mch) > 0 and mch[0][0] == email else False
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            return False
+        else:
+            return True
 
     def register(self, username, confirmPassword, password, email):
         # insert_string = "username={}, password={}, email={}"

@@ -291,7 +291,7 @@ class FH_presenter(Tk):
             start_date = str(res_entry[0][1])
             end_date = str(res_entry[0][2])
             room_list = [(x[10], x[12], x[13], x[14], x[15], x[16]) for x in res_entry]
-            cost = self.calc_cost(start_date, end_date, room_list)
+            cost = res_entry[0][3]
             frame = CancelReservationPage2(self.container, self, resid, room_list, start_date, end_date, cost)
             frame.grid(row=0, column=0, sticky="nsew")
             self.curr_frame.destroy()

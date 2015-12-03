@@ -259,7 +259,7 @@ class PaymentPage(Frame):
         Label(self, text = "Card Number", font = Main_Font).grid(row = 3, column = 2)
 
         # options = [ "hi", "bye"]
-        options = presenter.get_cards()
+        options = presenter.get_cards() if presenter.get_cards() else [None]
         self.credit_card = StringVar()
         credit_card = OptionMenu (self, self.credit_card, *options)
         credit_card.configure(width = 20, font = Main_Font)
